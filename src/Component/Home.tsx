@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import { Carousel } from 'antd';
+import Navbar from './Navbar';
 
 // Import images (if they are inside the src directory)
 import image1 from '../assets/แจ้งซ่อม.webp';
@@ -11,6 +12,7 @@ const images = [image1, image2];
 const Home: React.FC = () => {
     return (
         <>
+            <Navbar />
             <div className="home">
                 <div className="home-carousel-container">
                     <Carousel autoplay>

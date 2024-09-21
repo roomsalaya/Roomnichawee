@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage'; // นำเข้า Firebase Storage
+import { getStorage } from 'firebase/storage';
 
-// Your web app's Firebase configuration
+// กำหนดค่าของ Firebase สำหรับเว็บแอปของคุณ
 const firebaseConfig = {
     apiKey: "AIzaSyBV1zfZd4vmzDczjVgPgEVEUHpCE_igUTU",
     authDomain: "newroom-76a50.firebaseapp.com",
@@ -15,7 +15,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // สร้าง instance ของ Firestore
-const storage = getStorage(app); // สร้าง instance ของ Storage
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { auth, db, doc, getDoc, storage }; // ส่งออกฟังก์ชันที่ต้องการ
+// ส่งออก
+export { auth, db, doc, getDoc, storage }; // ตรวจสอบว่ามี doc ถูกส่งออก
