@@ -138,11 +138,6 @@ const Navbar: React.FC = () => {
             label: <Link to="/adminparcelpage">ลบประวัติรับพัสดุ</Link>,
         },
         role === 'admin' && {
-            key: 'adminparcels',
-            icon: <AlertOutlined />,
-            label: <Link to="/MaintenanceReport">แจ้งซ่อม</Link>,
-        },
-        role === 'admin' && {
             key: 'maintenanceHistory',
             icon: <ToolOutlined />,
             label: <Link to="/MaintenanceList">ประวัติแจ้งซ่อมแซม</Link>,
@@ -151,6 +146,11 @@ const Navbar: React.FC = () => {
             key: 'profile',
             icon: <UserOutlined />,
             label: <Link to="/profile">โปรไฟล์</Link>,
+        },
+        role === 'user' && {
+            key: 'adminparcels',
+            icon: <AlertOutlined />,
+            label: <Link to="/MaintenanceReport">แจ้งซ่อม</Link>,
         },
         role && {
             key: 'logout',
