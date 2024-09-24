@@ -1,25 +1,36 @@
-/* Home component styling */
+/* General styles */
 .home {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #f5f5f5; /* Light background color */
-    min-height: 100vh; /* Make sure the home component takes the full height */
+    padding: 0 10px; /* Add some padding */
 }
 
-/* Carousel container styling */
+/* Carousel styles */
 .home-carousel-container {
-    width: 100%;
-    margin: 0 auto; /* Center the carousel */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the carousel */
-    border-radius: 10px; /* Rounded corners for the carousel */
-    overflow: hidden; /* Hide overflow to maintain rounded corners */
+    position: relative; /* Make sure it's positioned properly */
+    width: 100%; /* Full width for the carousel */
 }
 
-/* Image styling inside carousel */
+/* Carousel images */
 .home-carousel-container img {
-    width: 100%;
-    height: auto; /* Keep image aspect ratio */
-    display: block; /* Ensure the image takes full width */
-    border-radius: 10px; /* Keep the rounded corners for images */
+    width: 100%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px; /* Optional: Add rounded corners */
+}
+
+/* ParcelList styles */
+.ParcelList {
+    margin-top: 20px; /* Space between the carousel and ParcelList */
+}
+
+/* Footer styles */
+footer {
+    padding: 10px 0; /* Padding for footer */
+}
+
+/* Media queries for mobile devices */
+@media (max-width: 768px) {
+    
+    /* Ensure the font sizes are readable on mobile */
+    h1, h2, h3, p {
+        font-size: 16px; /* Adjust font size for smaller screens */
+    }
 }
