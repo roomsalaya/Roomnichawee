@@ -37,7 +37,7 @@ const Login: React.FC = () => {
 
             if (docSnap.exists()) {
                 const userData = docSnap.data();
-
+                
                 // Store email and password if "Remember Me" is checked
                 if (values.remember) {
                     localStorage.setItem('email', values.email);
@@ -68,51 +68,51 @@ const Login: React.FC = () => {
 
     return (
         <>
-            <div className="login-container"> {/* Apply the CSS class */}
-                <h2>ล็อกอิน</h2>
-                <Form
-                    form={form}
-                    name="login"
-                    initialValues={{ remember: true }} // Set remember to true by default if needed
-                    onFinish={onFinish}
+        <div className="login-container"> {/* Apply the CSS class */}
+            <h2>ล็อกอิน</h2>
+            <Form
+                form={form}
+                name="login"
+                initialValues={{ remember: true }} // Set remember to true by default if needed
+                onFinish={onFinish}
+            >
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, message: 'กรุณากรอกอีเมลของคุณ!' }]}
                 >
-                    <Form.Item
-                        name="email"
-                        rules={[{ required: true, message: 'กรุณากรอกอีเมลของคุณ!' }]}
+                    <Input
+                        prefix={<UserOutlined />}
+                        placeholder="อีเมล"
+                        type="email"
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[{ required: true, message: 'กรุณากรอกรหัสผ่านของคุณ!' }]}
+                >
+                    <Input.Password
+                        prefix={<LockOutlined />}
+                        placeholder="รหัสผ่าน"
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                        <Checkbox>จำรหัสผ่าน</Checkbox>
+                    </Form.Item>
+                </Form.Item>
+                <Form.Item>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                        block
                     >
-                        <Input
-                            prefix={<UserOutlined />}
-                            placeholder="อีเมล"
-                            type="email"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="password"
-                        rules={[{ required: true, message: 'กรุณากรอกรหัสผ่านของคุณ!' }]}
-                    >
-                        <Input.Password
-                            prefix={<LockOutlined />}
-                            placeholder="รหัสผ่าน"
-                        />
-                    </Form.Item>
-                    <Form.Item>
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox>จำรหัสผ่าน</Checkbox>
-                        </Form.Item>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                            block
-                        >
-                            ล็อกอิน
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-            <Footer />
+                        ล็อกอิน
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+        <Footer/>
         </>
     );
 };
