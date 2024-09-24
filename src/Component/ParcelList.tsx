@@ -38,7 +38,7 @@ function ParcelList() {
                 setParcelData(parcels);
             } catch (error) {
                 console.error('Error fetching parcel data:', error);
-                message.error('เกิดข้อผิดพลาดในการดึงข้อมูลพัสดุ');
+                // message.error('เกิดข้อผิดพลาดในการดึงข้อมูลพัสดุ'); // ลบหรือคอมเมนต์บรรทัดนี้
             } finally {
                 setLoading(false); // สิ้นสุดการโหลด
             }
