@@ -10,7 +10,6 @@
 /* Carousel container styling */
 .home-carousel-container {
     width: 100%;
-    max-width: 800px; /* Restrict max width of the carousel */
     margin: 0 auto; /* Center the carousel */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the carousel */
     border-radius: 10px; /* Rounded corners for the carousel */
