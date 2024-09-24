@@ -74,6 +74,7 @@ function Parcel() {
     return (
         <>
             <Navbar />
+            <h3>เพิ่มพัสดุ</h3>
             {loading && (
                 <div className="loading-container">
                     <Spin size="large" />

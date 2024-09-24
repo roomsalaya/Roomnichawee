@@ -1,6 +1,7 @@
 /* General styles */
 .home {
     padding: 0 10px; /* Add some padding */
+    min-height: 100vh;
 }
 
 /* Carousel styles */
