@@ -133,6 +133,11 @@ const Navbar: React.FC = () => {
             label: <Link to="/parcel">เพิ่มพัสดุ</Link>,
         },
         role === 'admin' && {
+            key: 'adminparcelpage',
+            icon: <InboxOutlined />,
+            label: <Link to="/adminparcelpage">ลบประวัติรับพัสดุ</Link>,
+        },
+        role === 'admin' && {
             key: 'adminparcels',
             icon: <AlertOutlined />,
             label: <Link to="/MaintenanceReport">แจ้งซ่อม</Link>,

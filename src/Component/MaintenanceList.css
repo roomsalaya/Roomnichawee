@@ -1,8 +1,17 @@
-.maintenance-list-container {
+.maintenance-list-wrapper {
+    display: flex;
+    flex-direction: column;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh; /* Ensures the wrapper takes at least full viewport height */
+}
+
+.maintenance-list-container {
+    flex: 1; /* Allows the container to grow and push footer down */
+}
+
+
+.footer{
+    min-height: 100vh;
 }
 
 .h3 {
@@ -57,4 +66,19 @@
     display: block;
     margin: 10px auto;
     border-radius: 4px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .parcel-table th, .parcel-table td {
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
+
+    .parcel-image {
+        width: 80px; /* Smaller image size for mobile */
+    }
+
+    .modal-content {
+        width: 95%; /* Ensure modal fits on smaller screens */
+    }
 }

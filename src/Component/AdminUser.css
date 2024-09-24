@@ -3,6 +3,7 @@
 /* Style for the container */
 .admin-container {
     padding: 20px;
+    min-height: 100vh;
 }
 
 /* Style for the user list */
@@ -63,4 +64,19 @@
 
 .ant-input {
     margin-bottom: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .parcel-table th, .parcel-table td {
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
+
+    .parcel-image {
+        width: 80px; /* Smaller image size for mobile */
+    }
+
+    .modal-content {
+        width: 95%; /* Ensure modal fits on smaller screens */
+    }
 }

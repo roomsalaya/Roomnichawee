@@ -4,6 +4,7 @@ import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/fire
 import { Row, Col, Card, Button, Spin, message } from 'antd'; // นำเข้าส่วนประกอบจาก Ant Design
 import Navbar from './Navbar';
 import './AdminUser.css'; // นำเข้าไฟล์ CSS ของคุณสำหรับการจัดรูปแบบ
+import Footer from './Footer';
 
 // กำหนดประเภทของผู้ใช้พร้อมสถานะห้อง
 interface User {
@@ -219,6 +220,7 @@ const AdminUser: React.FC = () => {
                     </>
                 )}
             </div>
+            <Footer/>
         </>
     );
 };

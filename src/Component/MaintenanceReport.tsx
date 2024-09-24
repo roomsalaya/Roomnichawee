@@ -5,13 +5,14 @@ import { db, storage } from './firebaseConfig';
 import Navbar from './Navbar';
 import { Spin, message } from 'antd';
 import './maintenance.css';
+import Footer from './Footer';
 
 function MaintenanceReport() {
-    const [issueDescription, setIssueDescription] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
+    const [issueDescription, setIssueDescription] = useState('');
+    const [location, setLocation] = useState('');
     const [image, setImage] = useState<File | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -19,7 +20,7 @@ function MaintenanceReport() {
         const trimmedIssueDescription = issueDescription.trim();
         const trimmedLocation = location.trim();
 
-        if (!trimmedIssueDescription || !trimmedLocation ) {
+        if (!trimmedIssueDescription || !trimmedLocation) {
             message.warning("กรุณากรอกข้อมูลให้ครบถ้วน");
             return;
         }
@@ -70,7 +71,7 @@ function MaintenanceReport() {
     };
 
     return (
-        <>
+        <div className="wrapper">
             <Navbar />
             {loading && (
                 <div className="loading-container">
@@ -111,7 +112,8 @@ function MaintenanceReport() {
                     {isSubmitting ? 'กำลังบันทึก...' : 'บันทึก'}
                 </button>
             </form>
-        </>
+            <Footer />
+        </div>
     );
 }
 

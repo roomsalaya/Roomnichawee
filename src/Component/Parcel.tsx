@@ -5,6 +5,7 @@ import { db, storage } from './firebaseConfig';
 import Navbar from './Navbar';
 import { Spin, message } from 'antd'; // นำเข้า Spin และ message จาก Ant Design
 import './parcel.css';
+import Footer from './Footer';
 
 function Parcel() {
     const [recipient, setRecipient] = useState<string>(''); 
@@ -121,6 +122,7 @@ function Parcel() {
                     {isSubmitting ? 'กำลังบันทึก...' : 'บันทึก'}
                 </button>
             </form>
+            <Footer/>
         </>
     );
 }

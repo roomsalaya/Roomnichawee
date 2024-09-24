@@ -3,6 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import Navbar from './Navbar';
 import './Profile.css'; // Import the CSS file
+import Footer from './Footer';
 
 const Profile: React.FC = () => {
     const [userData, setUserData] = useState<any>(null);
@@ -74,6 +75,7 @@ const Profile: React.FC = () => {
                     <p className="loading-message">กำลังโหลดข้อมูล...</p>
                 )}
             </div>
+            <Footer/>
         </>
     );
 };

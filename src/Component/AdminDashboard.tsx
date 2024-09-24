@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import './AdminDashboard.css';
 import { Row, Col, Card, Progress, Spin, message as AntMessage } from 'antd'; // Import message from Ant Design
 import { PieChart, Pie, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import Footer from './Footer';
 
 interface RoomStatus {
     available: number;
@@ -109,6 +110,7 @@ const AdminDashboard: React.FC = () => {
                     </Row>
                 )}
             </div>
+            <Footer/>
         </>
     );
 };

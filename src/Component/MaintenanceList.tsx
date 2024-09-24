@@ -4,6 +4,8 @@ import { db } from './firebaseConfig';
 import Navbar from './Navbar';
 import { Button, List, Spin, message, Modal } from 'antd';
 import './MaintenanceList.css';
+import Footer from './Footer';
+
 interface MaintenanceReportData {
     id: string;
     issueDescription: string;
@@ -79,7 +81,7 @@ const MaintenanceList: React.FC = () => {
     };
 
     return (
-        <>
+        <div className="maintenance-list-wrapper"> {/* New wrapper div */}
             <Navbar />
             <div className="maintenance-list-container">
                 <h3>รายการแจ้งซ่อมแซม</h3>
@@ -131,7 +133,8 @@ const MaintenanceList: React.FC = () => {
                     </>
                 )}
             </Modal>
-        </>
+            <Footer />
+        </div>
     );
 };
 

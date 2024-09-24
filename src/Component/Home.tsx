@@ -7,6 +7,7 @@ import Navbar from './Navbar';
 import image1 from '../assets/แจ้งซ่อม.webp';
 import image2 from '../assets/พัสดุ.webp';
 import ParcelList from './ParcelList';
+import Footer from './Footer';
 
 const images = [image1, image2];
 
@@ -26,6 +27,7 @@ const Home: React.FC = () => {
                     <ParcelList/>
                 </div>
             </div>
+            <Footer/>
             
         </>
     );

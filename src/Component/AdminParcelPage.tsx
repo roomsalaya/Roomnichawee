@@ -3,6 +3,7 @@ import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import Navbar from './Navbar';
 import './adminParcel.css';
+import Footer from './Footer';
 
 interface ParcelData {
     id: string;
@@ -56,7 +57,7 @@ function AdminParcelPage() {
         <>
             <Navbar />
             <div className="admin-parcel-page">
-                <h2>ข้อมูลพัสดุ</h2>
+                <h2>ลบประวัติรับพัสดุ</h2>
                 {loading ? (
                     <p>กำลังโหลดข้อมูล...</p>
                 ) : parcels.length === 0 ? (
@@ -98,6 +99,7 @@ function AdminParcelPage() {
                     </table>
                 )}
             </div>
+            <Footer/>
         </>
     );
 }

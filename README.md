@@ -32,3 +32,5 @@ export default {
 git add .
 git commit -m "Initial commit"
 git push
+npm run build
+npm run deploy
