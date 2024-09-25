@@ -14,6 +14,7 @@ interface User {
     email: string;
     phone: string;
     rental: string;
+    Rent: number;
     water: number;
     electricity: number;
     roomStatus: 'available' | 'occupied'; // เพิ่ม roomStatus เป็น 'available' หรือ 'occupied'
@@ -185,6 +186,14 @@ const AdminUser: React.FC = () => {
                                             type="text"
                                             value={updatedUser?.rental || ''}
                                             onChange={(e) => handleInputChange(e, 'rental')}
+                                        />
+                                    </label>
+                                    <label>
+                                        ค่าเช่า:
+                                        <input
+                                            type="number"
+                                            value={updatedUser?.Rent || ''}
+                                            onChange={(e) => handleInputChange(e, 'Rent')}
                                         />
                                     </label>
                                     <label>

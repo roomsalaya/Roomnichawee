@@ -20,6 +20,7 @@
 .notification-badge {
     float: right;
     margin-right: 20px;
+    transform: translateY(20px);
 }
 
 .notification-modal .ant-modal-header {
