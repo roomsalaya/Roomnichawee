@@ -11,6 +11,8 @@ import AdminUser from './Component/AdminUser';
 import MaintenanceReport from './Component/MaintenanceReport';
 import MaintenanceList from './Component/MaintenanceList';
 import MaintenanceListView from './Component/MaintenanceListView';
+import ElectricityRate from './Component/ElectricityRate';
+import Showelectricity from './Component/Showelectricity';
 
 const App: React.FC = () => {
   return (
@@ -27,6 +29,8 @@ const App: React.FC = () => {
         <Route path="/maintenancereport" element={<MaintenanceReport />} /> {/* Changed to lowercase */}
         <Route path="/maintenancelist" element={<MaintenanceList />} />  {/* Changed to lowercase */}
         <Route path='/maintenancelistview' element={<MaintenanceListView/>} /> 
+        <Route path='/ElectricityRate' element={<ElectricityRate/>} />
+        <Route path='/Showelectricity' element={<Showelectricity/>} />
       </Routes>
     </Router>
   );

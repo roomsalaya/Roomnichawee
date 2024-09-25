@@ -1,0 +1,148 @@
+.electricityrate-container{
+    align-items: center;
+    font-family: "Anuphan", sans-serif;
+}
+
+.form-select {
+    --bs-form-select-bg-img: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e);
+    display: block;
+    width: 100%;
+    padding: .375rem 2.25rem .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.electricityrate {
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    max-width: 600px;
+    margin: 20px auto;
+    
+}
+
+.electricityrate h3{
+    text-align: center;
+    font-weight: 700;
+    color: royalblue;
+}
+
+.electricityrate .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+.dropdown-menu.show {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 0.5rem 1.5rem;
+    font-family: "Anuphan", sans-serif;
+    font-weight: 500;
+    margin: auto;
+}
+
+.electricityrate-dropdown{
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: navy;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.electricityrate-dropdown h3{
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+}
+
+.table-container{
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.table .color {
+    background-color: #feffca;
+    font-weight: bold;
+    text-align: center;
+}
+
+.table .color input{
+    font-weight: bold;
+    text-align: center;
+}
+
+.table .color-electricity{
+    background-color: paleturquoise;
+    font-weight: bold;
+    text-align: center;
+    border: 5px solid #ffffff;
+}
+
+.table .color-electricity input{
+    font-weight: bold;
+    text-align: center;
+}
+
+.table .color-tomato{
+    background-color: rgb(255, 170, 155);
+    font-weight: bold;
+    text-align: center;
+    border: 5px solid #ffffff;
+}
+
+.table .color-tomato input{
+    font-weight: bold;
+    text-align: center;
+}
+
+.table .color-greenyellow{
+    background-color: greenyellow;
+    font-weight: bold;
+    text-align: center;
+    border: 5px solid #ffffff;
+}
+
+.table .color-greenyellow input{
+    font-weight: bold;
+    text-align: center;
+}
+
+.table .total-label {
+    color: red;
+    font-weight: 700;
+}

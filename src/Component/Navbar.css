@@ -1,87 +1,135 @@
-/* Navbar.css */
+/* Navbar container */
 .logo {
     float: left;
     margin-left: 20px;
+    display: flex;
+    align-items: center;
 }
 
 .logo h2 {
+    font-family: 'Anuphan', sans-serif; /* Example Google font */
+    font-size: 24px;
+    color: #333;
     margin: 0;
-    color: #1890ff;
-    font-weight: bold;
+}
+
+/* Notification badge */
+.notification-badge {
+    margin-right: 30px;
+    float: right;
+    transform: translateY(20px);
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .notification-icon {
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
-    margin-right: 30px;
-    float: right;
+    color: #1890ff; /* Ant Design primary color */
+    transition: color 0.3s ease;
 }
 
-.notification-badge {
-    float: right;
-    margin-right: 20px;
-    transform: translateY(20px);
+.notification-icon:hover {
+    color: #40a9ff;
 }
 
-.notification-modal .ant-modal-header {
-    background-color: #f0f2f5;
-}
-
+/* Modal styles */
 .notification-modal .ant-modal-title {
     font-weight: bold;
+    color: #333;
+    font-family: "Anuphan", system-ui;
 }
 
+.notification-modal .ant-modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.notification-modal .ant-btn-primary {
+    background-color: #1890ff;
+    border-color: #1890ff;
+    font-family: "Anuphan", system-ui;
+}
+
+.notification-modal .ant-btn-primary:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+/* Notification list items */
 .notification-list-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #e8e8e8;
-}
-
-.notification-list-item.read {
-    background-color: #f6f6f6;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-family: "Anuphan", system-ui;
 }
 
 .notification-list-item.unread {
-    background-color: #fffbe6;
+    background-color: #e6f7ff;
 }
 
-.notification-list-title.read-title {
-    font-weight: normal;
-}
-
-.notification-list-title.unread-title {
-    font-weight: bold;
-}
-
-.notification-list-description {
-    display: flex;
-    align-items: center;
+.notification-list-item.read {
+    background-color: #fff;
 }
 
 .notification-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
 }
 
-.notification-list-description .ant-btn-link {
+.notification-list-title {
+    font-weight: bold;
+    font-size: 16px;
+    font-family: "Anuphan", system-ui;
+}
+
+.notification-list-title.unread-title {
+    color: #1890ff;
+}
+
+.notification-list-title.read-title {
+    color: #888;
+}
+
+.notification-list-description {
+    font-size: 14px;
+    color: #555;
+}
+
+.notification-list-description.unread-description {
+    font-weight: bold;
+    color: #1890ff;
+}
+
+.notification-list-description.read-description {
+    color: #888;
+}
+
+.ant-list-item-meta-title {
+    margin-bottom: 5px;
+}
+
+.ant-list-item-meta-description {
+    margin-top: 5px;
+}
+
+.ant-list-item-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Button styling */
+.ant-btn-link {
+    font-size: 12px;
+    padding: 0;
     color: #ff4d4f;
 }
 
 .ant-btn-link:hover {
-    text-decoration: underline;
+    color: #ff7875;
 }
 
-/* Media Queries */
-@media (max-width: 768px) {
-    .logo {
-        margin-left: 10px;
-    }
-
-    .notification-icon {
-        margin-right: 15px;
-    }
-
-    .notification-badge {
-        margin-right: 10px;
-    }
-}

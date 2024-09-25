@@ -133,29 +133,19 @@ const Navbar: React.FC = () => {
             label: <Link to="/parcel">เพิ่มพัสดุ</Link>,
         },
         role === 'admin' && {
-            key: 'adminparcelpage',
-            icon: <InboxOutlined />,
-            label: <Link to="/adminparcelpage">ลบประวัติรับพัสดุ</Link>,
+            key: 'adminparcels',
+            icon: <AlertOutlined />,
+            label: <Link to="/MaintenanceReport">แจ้งซ่อม</Link>,
         },
         role === 'admin' && {
             key: 'maintenanceHistory',
             icon: <ToolOutlined />,
-            label: <Link to="/maintenancelist">ประวัติแจ้งซ่อมแซม</Link>,
+            label: <Link to="/MaintenanceList">ประวัติแจ้งซ่อมแซม</Link>,
         },
         role === 'user' && {
             key: 'profile',
             icon: <UserOutlined />,
             label: <Link to="/profile">โปรไฟล์</Link>,
-        },
-        role === 'user' && {
-            key: 'adminparcels',
-            icon: <AlertOutlined />,
-            label: <Link to="/maintenancereport">แจ้งซ่อม</Link>,
-        },
-        role === 'user' && {
-            key: 'maintenancelistview',
-            icon: <AlertOutlined />,
-            label: <Link to="/maintenancelistview">รายการแจ้งซ่อม</Link>,
         },
         role && {
             key: 'logout',
