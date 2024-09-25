@@ -1,96 +1,86 @@
-/* General layout */
+/* Navbar.css */
 .logo {
-    font-size: 24px;
+    float: left;
+    margin-left: 20px;
+}
+
+.logo h2 {
     margin: 0;
-    padding: 10px;
-    color: #333;
+    color: #1890ff;
+    font-weight: bold;
 }
 
-/* Adjust the logo font size and margins on smaller screens */
-@media (max-width: 768px) {
-    .logo {
-        font-size: 18px; /* Reduce logo size on mobile */
-        margin-left: 10px; /* Less margin for smaller screens */
-    }
-    
-    .notification-icon {
-        font-size: 18px; /* Smaller notification icon */
-        margin-right: 10px;
-    }
-    
-    .ant-menu-item {
-        font-size: 14px; /* Smaller font for menu items */
-    }
-    
-    .ant-menu-horizontal {
-        line-height: 50px; /* Reduce line height to shrink the navbar */
-    }
-    
-    /* Badge size for notifications */
-    .notification-badge .ant-badge-count {
-        right: 12px;
-        top: 5px;
-        font-size: 10px;
-        height: 16px;
-        min-width: 16px;
-    }
+.notification-icon {
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 30px;
+    float: right;
 }
 
-/* Notification modal styles */
-.notification-modal {
-    max-width: 90%;
+.notification-badge {
+    float: right;
+    margin-right: 20px;
+}
+
+.notification-modal .ant-modal-header {
+    background-color: #f0f2f5;
+}
+
+.notification-modal .ant-modal-title {
+    font-weight: bold;
 }
 
 .notification-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 10px 0;
+    border-bottom: 1px solid #e8e8e8;
 }
 
-/* Notification avatar */
+.notification-list-item.read {
+    background-color: #f6f6f6;
+}
+
+.notification-list-item.unread {
+    background-color: #fffbe6;
+}
+
+.notification-list-title.read-title {
+    font-weight: normal;
+}
+
+.notification-list-title.unread-title {
+    font-weight: bold;
+}
+
+.notification-list-description {
+    display: flex;
+    align-items: center;
+}
+
 .notification-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
 }
 
-/* Unread notifications */
-.unread-title {
-    font-weight: bold;
-    color: #f5222d;
+.notification-list-description .ant-btn-link {
+    color: #ff4d4f;
 }
 
-.unread-description {
-    font-weight: bold;
-    color: #555;
+.ant-btn-link:hover {
+    text-decoration: underline;
 }
 
-/* Read notifications */
-.read-title {
-    color: #999;
-}
-
-.read-description {
-    color: #999;
-}
-
-/* Modal responsiveness */
+/* Media Queries */
 @media (max-width: 768px) {
-    .notification-modal {
-        top: 20px;
-        left: 0;
-        right: 0;
-        max-width: 100%; /* Full width on mobile */
-        padding: 0 10px;
+    .logo {
+        margin-left: 10px;
     }
 
-    .notification-list-item {
-        font-size: 12px; /* Smaller text on mobile */
+    .notification-icon {
+        margin-right: 15px;
     }
-    
-    .notification-avatar {
-        width: 30px;
-        height: 30px; /* Smaller avatar on mobile */
+
+    .notification-badge {
+        margin-right: 10px;
     }
 }

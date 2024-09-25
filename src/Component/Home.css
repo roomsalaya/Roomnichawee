@@ -1,24 +1,51 @@
-/* Home component styling */
+/* HomePage.css */
 .home {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
-    background-color: #f5f5f5; /* Light background color */
-    min-height: 100vh; /* Make sure the home component takes the full height */
+    background-color: #f0f2f5; /* Ant Design's light background color */
 }
 
-/* Carousel container styling */
 .home-carousel-container {
-    width: 100%;
-    margin: 0 auto; /* Center the carousel */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow to the carousel */
-    border-radius: 10px; /* Rounded corners for the carousel */
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* Image styling inside carousel */
-.home-carousel-container img {
+.ant-carousel .slick-slide {
+    text-align: center;
+}
+
+.ant-carousel .slick-slide img {
     width: 100%;
-    height: auto; /* Keep image aspect ratio */
-    display: block; /* Ensure the image takes full width */
-    border-radius: 10px; /* Keep the rounded corners for images */
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Additional styling for ParcelList and Footer components */
+.parcel-list-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #001529;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .home-carousel-container {
+        width: 100%;
+    }
+
+    .ant-carousel .slick-slide img {
+        border-radius: 0; /* Remove border-radius on smaller screens */
+    }
 }
