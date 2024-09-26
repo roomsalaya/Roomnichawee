@@ -1,4 +1,23 @@
 /* Navbar container */
+@import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@400;700&display=swap');
+
+.menu-label {
+    font-family: 'Anuphan', sans-serif; /* Use your desired font */
+    font-size: 16px; /* Adjust font size as needed */
+    color: #000; /* Customize text color */
+}
+
+.menu-label a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit the color from parent */
+}
+
+.menu-label-Login{
+    font-family: 'Anuphan', sans-serif; /* Use your desired font */
+    font-size: 16px; /* Adjust font size as needed */
+    color: #ff0000; /* Customize text color */
+}
+
 .logo {
     float: left;
     margin-left: 20px;
@@ -49,7 +68,7 @@
 .notification-modal .ant-btn-primary {
     background-color: #1890ff;
     border-color: #1890ff;
-    font-family: "Anuphan", system-ui;
+    font-family: 'Anuphan', sans-serif;
 }
 
 .notification-modal .ant-btn-primary:hover {
@@ -62,7 +81,7 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    font-family: "Anuphan", system-ui;
+    font-family: 'Anuphan', sans-serif;
 }
 
 .notification-list-item.unread {

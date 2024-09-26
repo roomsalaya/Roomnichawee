@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { Row, Col, Card, Button, Spin, message } from 'antd'; // นำเข้าส่วนประกอบจาก Ant Design
+import { Row, Col, Card, Button, Spin, message, Modal } from 'antd'; // นำเข้า Modal จาก Ant Design
 import Navbar from './Navbar';
 import './AdminUser.css'; // นำเข้าไฟล์ CSS ของคุณสำหรับการจัดรูปแบบ
 import Footer from './Footer';
@@ -10,14 +10,14 @@ import Footer from './Footer';
 interface User {
     id: string;
     name: string;
-    room: string; // ตรวจสอบให้แน่ใจว่าฟิลด์นี้สามารถเปรียบเทียบได้ตามตัวเลขหรือปรับการเปรียบเทียบหากจำเป็น
+    room: string;
     email: string;
     phone: string;
     rental: string;
     Rent: number;
     water: number;
     electricity: number;
-    roomStatus: 'available' | 'occupied'; // เพิ่ม roomStatus เป็น 'available' หรือ 'occupied'
+    roomStatus: 'available' | 'occupied';
 }
 
 // กำหนดประเภทสำหรับการอัปเดตบางส่วน
@@ -27,7 +27,8 @@ const AdminUser: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [updatedUser, setUpdatedUser] = useState<PartialUserUpdate | null>(null);
-    const [loading, setLoading] = useState<boolean>(false); // เพิ่มสถานะ loading
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // จัดการสถานะ Modal
     const auth = getAuth();
     const db = getFirestore();
     const admin = auth.currentUser;
@@ -35,13 +36,12 @@ const AdminUser: React.FC = () => {
     useEffect(() => {
         if (admin) {
             const fetchUsers = async () => {
-                setLoading(true); // เริ่มการโหลด
+                setLoading(true);
                 try {
                     const usersCollection = collection(db, 'users');
                     const usersSnapshot = await getDocs(usersCollection);
                     const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as User[];
-                    
-                    // เรียงลำดับผู้ใช้ตามหมายเลขห้อง
+
                     usersList.sort((a, b) => {
                         const roomA = parseInt(a.room, 10);
                         const roomB = parseInt(b.room, 10);
@@ -53,7 +53,7 @@ const AdminUser: React.FC = () => {
                     console.error("Error fetching users:", error);
                     message.error('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้');
                 } finally {
-                    setLoading(false); // สิ้นสุดการโหลด
+                    setLoading(false);
                 }
             };
 
@@ -63,35 +63,29 @@ const AdminUser: React.FC = () => {
 
     const handleUserClick = (user: User) => {
         if (selectedUser?.id === user.id) {
-            // ยกเลิกการเลือกหากคลิกผู้ใช้เดิมอีกครั้ง
             setSelectedUser(null);
             setUpdatedUser(null);
         } else {
-            // เลือกผู้ใช้ใหม่
             setSelectedUser(user);
             setUpdatedUser({ ...user });
+            setIsModalVisible(true); // แสดง Modal เมื่อคลิกผู้ใช้
         }
     };
 
     const handleUpdate = async () => {
         if (updatedUser && selectedUser) {
-            setLoading(true); // เริ่มการโหลด
+            setLoading(true);
             try {
                 const userDoc = doc(db, 'users', selectedUser.id);
-                // ส่งเฉพาะฟิลด์ที่ได้รับการอัปเดต
-                await updateDoc(userDoc, updatedUser as any); // Cast เป็น any เพื่อให้ตรงตามการตรวจสอบประเภท
+                await updateDoc(userDoc, updatedUser as any);
                 setSelectedUser(null);
                 setUpdatedUser(null);
-                
-                // แสดงข้อความอัปเดตสำเร็จ
                 message.success('อัปเดตข้อมูลสำเร็จ');
 
-                // อัปเดตข้อมูลผู้ใช้ใหม่เพื่อสะท้อนการเปลี่ยนแปลง
                 const usersCollection = collection(db, 'users');
                 const usersSnapshot = await getDocs(usersCollection);
                 const usersList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as User[];
-                
-                // เรียงลำดับผู้ใช้ตามหมายเลขห้อง
+
                 usersList.sort((a, b) => {
                     const roomA = parseInt(a.room, 10);
                     const roomB = parseInt(b.room, 10);
@@ -99,11 +93,12 @@ const AdminUser: React.FC = () => {
                 });
 
                 setUsers(usersList);
+                setIsModalVisible(false); // ปิด Modal หลังจากอัปเดต
             } catch (error) {
                 console.error("Error updating user:", error);
                 message.error('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
             } finally {
-                setLoading(false); // สิ้นสุดการโหลด
+                setLoading(false);
             }
         }
     };
@@ -118,13 +113,19 @@ const AdminUser: React.FC = () => {
         } : {}));
     };
 
+    const handleCancel = () => {
+        setIsModalVisible(false); // ปิด Modal เมื่อกดปุ่มยกเลิก
+        setSelectedUser(null);
+        setUpdatedUser(null);
+    };
+
     return (
         <>
             <Navbar />
             <div className="admin-container">
                 <h2>จัดการข้อมูลผู้ใช้</h2>
                 {loading ? (
-                    <Spin size="large" /> // แสดงการโหลด
+                    <Spin size="large" />
                 ) : (
                     <>
                         <div className="user-list">
@@ -143,93 +144,106 @@ const AdminUser: React.FC = () => {
                                 ))}
                             </Row>
                         </div>
-                        {selectedUser && (
-                            <div className="user-details">
-                                <h3>ข้อมูลผู้ใช้</h3>
-                                <form>
-                                    {/* ฟิลด์ฟอร์มสำหรับการอัปเดตผู้ใช้ */}
-                                    <label>
-                                        ชื่อ:
-                                        <input
-                                            type="text"
-                                            value={updatedUser?.name || ''}
-                                            onChange={(e) => handleInputChange(e, 'name')}
-                                        />
-                                    </label>
-                                    <label>
-                                        ห้อง:
-                                        <input
-                                            type="text"
-                                            value={updatedUser?.room || ''}
-                                            onChange={(e) => handleInputChange(e, 'room')}
-                                        />
-                                    </label>
-                                    <label>
-                                        อีเมล:
-                                        <input
-                                            type="text"
-                                            value={updatedUser?.email || ''}
-                                            onChange={(e) => handleInputChange(e, 'email')}
-                                        />
-                                    </label>
-                                    <label>
-                                        เบอร์โทรศัพท์:
-                                        <input
-                                            type="text"
-                                            value={updatedUser?.phone || ''}
-                                            onChange={(e) => handleInputChange(e, 'phone')}
-                                        />
-                                    </label>
-                                    <label>
-                                        สัญญาเช่า:
-                                        <input
-                                            type="text"
-                                            value={updatedUser?.rental || ''}
-                                            onChange={(e) => handleInputChange(e, 'rental')}
-                                        />
-                                    </label>
-                                    <label>
-                                        ค่าเช่า:
-                                        <input
-                                            type="number"
-                                            value={updatedUser?.Rent || ''}
-                                            onChange={(e) => handleInputChange(e, 'Rent')}
-                                        />
-                                    </label>
-                                    <label>
-                                        ค่าน้ำ:
-                                        <input
-                                            type="number"
-                                            value={updatedUser?.water || ''}
-                                            onChange={(e) => handleInputChange(e, 'water')}
-                                        />
-                                    </label>
-                                    <label>
-                                        ค่าไฟ หน่วยละ:
-                                        <input
-                                            type="number"
-                                            value={updatedUser?.electricity || ''}
-                                            onChange={(e) => handleInputChange(e, 'electricity')}
-                                        />
-                                    </label>
-                                    <label>
-                                        สถานะห้อง:
-                                        <select
-                                            value={updatedUser?.roomStatus || 'occupied'}
-                                            onChange={(e) => handleInputChange(e, 'roomStatus' as keyof User)} // จัดการการเปลี่ยนแปลงสถานะ
-                                        >
-                                            <option value="available">ว่าง</option>
-                                            <option value="occupied">ไม่ว่าง</option>
-                                        </select>
-                                    </label>
-                                    <Button type="primary" onClick={handleUpdate}>อัปเดตข้อมูล</Button>
-                                </form>
-                            </div>
-                        )}
                     </>
                 )}
+
+                {/* Modal สำหรับการแสดงรายละเอียดและอัปเดตข้อมูลผู้ใช้ */}
+                <Modal
+                    title="ข้อมูลผู้ใช้"
+                    visible={isModalVisible}
+                    onCancel={handleCancel}
+                >
+                    {selectedUser && (
+                        <form>
+                            <label>
+                                ชื่อ:
+                                <input
+                                    type="text"
+                                    value={updatedUser?.name || ''}
+                                    onChange={(e) => handleInputChange(e, 'name')}
+                                />
+                            </label>
+                            <label>
+                                ห้อง:
+                                <input
+                                    type="text"
+                                    value={updatedUser?.room || ''}
+                                    onChange={(e) => handleInputChange(e, 'room')}
+                                />
+                            </label>
+                            <label>
+                                อีเมล:
+                                <input
+                                    type="text"
+                                    value={updatedUser?.email || ''}
+                                    onChange={(e) => handleInputChange(e, 'email')}
+                                />
+                            </label>
+                            <label>
+                                เบอร์โทรศัพท์:
+                                <input
+                                    type="text"
+                                    value={updatedUser?.phone || ''}
+                                    onChange={(e) => handleInputChange(e, 'phone')}
+                                />
+                            </label>
+                            <label>
+                                สัญญาเช่า:
+                                <input
+                                    type="text"
+                                    value={updatedUser?.rental || ''}
+                                    onChange={(e) => handleInputChange(e, 'rental')}
+                                />
+                            </label>
+                            <label>
+                                ค่าเช่า:
+                                <input
+                                    type="number"
+                                    value={updatedUser?.Rent || ''}
+                                    onChange={(e) => handleInputChange(e, 'Rent')}
+                                />
+                            </label>
+                            <label>
+                                ค่าน้ำ:
+                                <input
+                                    type="number"
+                                    value={updatedUser?.water || ''}
+                                    onChange={(e) => handleInputChange(e, 'water')}
+                                />
+                            </label>
+                            <label>
+                                ค่าไฟ หน่วยละ:
+                                <input
+                                    type="number"
+                                    value={updatedUser?.electricity || ''}
+                                    onChange={(e) => handleInputChange(e, 'electricity')}
+                                />
+                            </label>
+                            <label>
+                                สถานะห้อง:
+                                <select
+                                    value={updatedUser?.roomStatus || 'occupied'}
+                                    onChange={(e) => handleInputChange(e, 'roomStatus' as keyof User)}
+                                >
+                                    <option value="available">ว่าง</option>
+                                    <option value="occupied">ไม่ว่าง</option>
+                                </select>
+                            </label>
+
+                            {/* Move buttons here */}
+                            <div style={{ marginTop: '16px' }}>
+                                <Button key="cancel" onClick={handleCancel} style={{ marginRight: '8px' }}>
+                                    ยกเลิก
+                                </Button>
+                                <Button key="submit" type="primary" onClick={handleUpdate}>
+                                    อัปเดตข้อมูล
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </Modal>
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 };

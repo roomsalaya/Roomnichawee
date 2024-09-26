@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "./firebaseConfig"; // Adjust the import path based on your project structure
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import "./ElectricityRate.css";
+import Navbar from "./Navbar";
 
 // Define the shape of the electricity data for each room
 interface ElectricityData {
@@ -188,6 +189,7 @@ const ElectricityRate: React.FC = () => {
 
     return (
         <>
+        <Navbar/>
             <div className="electricityrate-container">
                 <div className="electricityrate">
                     <h3>เลือกรอบจดมิเตอร์ไฟฟ้า</h3>

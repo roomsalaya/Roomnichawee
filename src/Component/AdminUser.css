@@ -1,82 +1,71 @@
-/* AdminUser.css */
-
-/* Style for the container */
 .admin-container {
     padding: 20px;
-    min-height: 100vh;
+    background-color: #f0f2f5; /* Light background color */
+    min-height: 100vh; /* Full height for the container */
 }
 
-/* Style for the user list */
-.user-list {
-    margin-top: 20px;
+.h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333; /* Dark text color */
+    font-family: "Anuphan", system-ui;
 }
 
-/* Style for user cards */
 .user-card {
-    cursor: pointer;
-    transition: transform 0.3s;
+    background-color: #fff; /* White background for cards */
+    border: 1px solid #d9d9d9; /* Light border for cards */
+    border-radius: 8px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.user-card:hover {
-    transform: scale(1.03);
+.ant-modal-header {
+    background-color: #40a9ff; /* Header color for modal */
+    color: white; /* Text color for modal header */
 }
 
-.selected {
-    border: 2px solid #1890ff; /* Highlight selected card */
-}
-
-/* Style for user details form */
-.user-details form {
-    display: flex;
-    flex-direction: column;
-}
-
-.user-details label {
-    margin-bottom: 10px;
-    text-align: left;
-}
-
-.user-details input, .user-details select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 4px;
-    box-sizing: border-box;
-}
-
-/* Style for the Add User button */
-.add-user-button {
-    margin-top: 20px; /* Position button after the heading */
-}
-
-/* Style for the modal */
-.ant-modal {
-    max-width: 600px;
-}
-
-.ant-modal-body {
-    padding: 20px;
+.ant-modal-title {
+    font-size: 18px; /* Title font size */
+    font-weight: bold; /* Bold title */
+    font-family: "Anuphan", system-ui;
+    color: #40a9ff;
 }
 
 .ant-modal-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Space out footer buttons */
 }
 
-.ant-input {
-    margin-bottom: 10px;
+form {
+    display: flex;
+    flex-direction: column; /* Column layout for form fields */
+    font-family: "Anuphan", system-ui;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .parcel-table th, .parcel-table td {
-        font-size: 14px; /* Adjust font size for smaller screens */
-    }
+label {
+    margin-bottom: 10px; /* Space between labels */
+    font-weight: 600; /* Bold labels */
+    font-family: "Anuphan", system-ui;
+    font-weight: bold;
+}
 
-    .parcel-image {
-        width: 80px; /* Smaller image size for mobile */
-    }
+input[type="text"],
+input[type="number"],
+select {
+    padding: 10px; /* Padding inside inputs */
+    border: 1px solid #d9d9d9; /* Border for inputs */
+    border-radius: 4px; /* Rounded corners for inputs */
+    margin-top: 5px; /* Space above inputs */
+    width: 100%; /* Full width for inputs */
+    font-family: "Anuphan", system-ui;
+}
 
-    .modal-content {
-        width: 95%; /* Ensure modal fits on smaller screens */
-    }
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #40a9ff; /* Border color on focus */
+    outline: none; /* Remove outline */
+}
+
+button {
+    margin-top: 10px; /* Space above buttons */
 }

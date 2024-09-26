@@ -115,42 +115,47 @@ const Navbar: React.FC = () => {
         {
             key: 'home',
             icon: <HomeOutlined />,
-            label: <Link to="/">หน้าหลัก</Link>,
+            label: <Link to="/" className="menu-label">หน้าหลัก</Link>,
         },
         role === 'admin' && {
             key: 'dashboard',
             icon: <DashboardOutlined />,
-            label: <Link to="/adminDashboard">แดชบอร์ด</Link>,
+            label: <Link to="/adminDashboard" className="menu-label">แดชบอร์ด</Link>,
         },
         role === 'admin' && {
             key: 'adminusers',
             icon: <FileSyncOutlined />,
-            label: <Link to="/adminusers">แก้ไขข้อมูลผู้เช่า</Link>,
+            label: <Link to="/adminusers" className="menu-label">แก้ไขข้อมูลผู้เช่า</Link>,
         },
         role === 'admin' && {
             key: 'parcel',
             icon: <InboxOutlined />,
-            label: <Link to="/parcel">เพิ่มพัสดุ</Link>,
+            label: <Link to="/parcel" className="menu-label">เพิ่มพัสดุ</Link>,
         },
         role === 'admin' && {
             key: 'adminparcels',
             icon: <AlertOutlined />,
-            label: <Link to="/MaintenanceReport">แจ้งซ่อม</Link>,
+            label: <Link to="/MaintenanceReport" className="menu-label">แจ้งซ่อม</Link>,
         },
         role === 'admin' && {
             key: 'maintenanceHistory',
             icon: <ToolOutlined />,
-            label: <Link to="/MaintenanceList">ประวัติแจ้งซ่อมแซม</Link>,
+            label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
+        },
+        role === 'admin' && {
+            key: 'maintenanceHistory',
+            icon: <ToolOutlined />,
+            label: <Link to="/ElectricityRate" className="menu-label">ElectricityRate</Link>,
         },
         role === 'user' && {
             key: 'profile',
             icon: <UserOutlined />,
-            label: <Link to="/profile">โปรไฟล์</Link>,
+            label: <Link to="/profile" className="menu-label">โปรไฟล์</Link>,
         },
         role && {
             key: 'logout',
             icon: <LoginOutlined />,
-            label: 'ออกจากระบบ',
+            label: <span className="menu-label-Login" onClick={handleLogout}>ออกจากระบบ</span>,
             onClick: handleLogout,
         },
     ].filter(Boolean) as { key: string; icon: JSX.Element; label: JSX.Element; onClick?: (() => void) | undefined }[];
@@ -179,8 +184,7 @@ const Navbar: React.FC = () => {
             {role === null && (
                 <Button
                     type="primary"
-                    icon={<LoginOutlined />}
-                    style={{ marginRight: '20px', float: 'right' }}
+                    style={{ marginRight: '10px', float: 'right' }}
                     onClick={() => navigate('/login')}
                 >
                     เข้าสู่ระบบ
