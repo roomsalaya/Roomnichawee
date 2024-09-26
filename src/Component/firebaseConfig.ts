@@ -1,16 +1,16 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // กำหนดค่าของ Firebase สำหรับเว็บแอปของคุณ
 const firebaseConfig = {
-    apiKey: "AIzaSyBV1zfZd4vmzDczjVgPgEVEUHpCE_igUTU",
-    authDomain: "newroom-76a50.firebaseapp.com",
-    projectId: "newroom-76a50",
-    storageBucket: "newroom-76a50.appspot.com",
-    messagingSenderId: "321915333016",
-    appId: "1:321915333016:web:504716e934036d3e6be3ed",
+    apiKey: "AIzaSyCj6hYxlMJecV31KFv9_MNY0LYbuzteUvE",
+    authDomain: "roomsalaya1.firebaseapp.com",
+    projectId: "roomsalaya1",
+    storageBucket: "roomsalaya1.appspot.com",
+    messagingSenderId: "482437655803",
+    appId: "1:482437655803:web:7c4721ad5fe6e1a09c945e",
 };
 
 const app = initializeApp(firebaseConfig);

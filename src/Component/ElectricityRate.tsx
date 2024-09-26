@@ -3,6 +3,7 @@ import { db } from "./firebaseConfig"; // Adjust the import path based on your p
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import "./ElectricityRate.css";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 // Define the shape of the electricity data for each room
 interface ElectricityData {
@@ -291,6 +292,7 @@ const ElectricityRate: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </>
     );
 };

@@ -2,8 +2,6 @@ import React from 'react';
 import './Home.css';
 import { Carousel } from 'antd';
 import Navbar from './Navbar';
-
-// Import images (if they are inside the src directory)
 import image1 from '../assets/แจ้งซ่อม.webp';
 import image2 from '../assets/พัสดุ.webp';
 import ParcelList from './ParcelList';
@@ -24,11 +22,10 @@ const Home: React.FC = () => {
                             </div>
                         ))}
                     </Carousel>
-                    <ParcelList/>
+                    <ParcelList />
                 </div>
             </div>
-            <Footer/>
-            
+            <Footer />
         </>
     );
 };

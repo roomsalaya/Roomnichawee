@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import * as XLSX from 'xlsx'; // Import XLSX library
 import "./Showelectricity.css";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 // Define the shape of the electricity data for each room
 interface ElectricityData {
@@ -161,6 +162,7 @@ const Showelectricity: React.FC = () => {
                     </table>
                 </div>
             </div>
+            <Footer/>
         </>
     );
 };

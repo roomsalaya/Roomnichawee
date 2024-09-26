@@ -1,8 +1,8 @@
-/* HomePage.css */
+/* Home.css */
 .home {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* ปรับให้เริ่มที่ด้านบน */
     align-items: center;
     padding: 20px;
     background-color: #f0f2f5; /* Ant Design's light background color */
@@ -11,7 +11,10 @@
 .home-carousel-container {
     width: 80%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 20px 0; /* เพิ่ม margin ด้านบนและด้านล่าง */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้กับคอนเทนเนอร์ */
+    border-radius: 10px; /* ปรับมุมให้โค้งมน */
+    overflow: hidden; /* เพื่อให้ภาพไม่ล้น */
 }
 
 .ant-carousel .slick-slide {
@@ -22,7 +25,7 @@
     width: 100%;
     height: auto;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 10px; /* รักษามุมโค้งมน */
 }
 
 /* Additional styling for ParcelList and Footer components */
@@ -31,21 +34,26 @@
     width: 100%;
 }
 
-footer {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #001529;
-    color: white;
+.footer {
+    width: 100%; /* ความกว้างเต็ม */
+    padding: 1rem;
+    background-color: #f0f0f0;
     text-align: center;
-    width: 100%;
+    position: relative; /* ตำแหน่งสัมพันธ์กับพ่อ */
+    bottom: 0; /* ตำแหน่งที่ด้านล่าง */
 }
 
+/* Responsive styles */
 @media (max-width: 768px) {
     .home-carousel-container {
-        width: 100%;
+        width: 100%; /* เต็มความกว้างบนอุปกรณ์ขนาดเล็ก */
     }
 
     .ant-carousel .slick-slide img {
-        border-radius: 0; /* Remove border-radius on smaller screens */
+        border-radius: 0; /* ลบ border-radius บนอุปกรณ์เล็ก */
+    }
+
+    .footer {
+        padding: 1rem 0; /* ปรับ padding ให้เหมาะสมกับมือถือ */
     }
 }
