@@ -3,6 +3,7 @@ import { db } from "./firebaseConfig"; // Adjust the import path based on your p
 import { doc, getDoc } from "firebase/firestore";
 import * as XLSX from 'xlsx'; // Import XLSX library
 import "./Showelectricity.css";
+import Navbar from "./Navbar";
 
 // Define the shape of the electricity data for each room
 interface ElectricityData {
@@ -87,6 +88,7 @@ const Showelectricity: React.FC = () => {
 
     return (
         <>
+        <Navbar/>
             <div className="showelectricity-container">
                 <div className="showelectricityr">
                     <h3>ดูข้อมูลการใช้ไฟฟ้า</h3>
@@ -119,6 +121,10 @@ const Showelectricity: React.FC = () => {
                             <option value="2567">2567</option>
                             <option value="2568">2568</option>
                             <option value="2569">2569</option>
+                            <option value="2568">2570</option>
+                            <option value="2569">2571</option>
+                            <option value="2568">2572</option>
+                            <option value="2569">2573</option>
                             {/* Add more years as needed */}
                         </select>
                     </div>

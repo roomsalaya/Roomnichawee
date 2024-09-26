@@ -1,25 +1,101 @@
-.showelectricity-container{
-    align-items: center;
-    font-family: "Anuphan", sans-serif;
+.showelectricity-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .showelectricityr {
-    align-items: center;
-    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.showelectricityr h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.dropdown {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-select:focus {
+    border-color: #007bff;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    max-width: 600px;
-    margin: 20px auto;
+    text-align: center;
+    font-size: 16px;
 }
 
-.showelectricityr h3{
-    text-align: center;
-    font-weight: 700;
-    padding-bottom: 5px;
-    color: royalblue;
+.table th {
+    background-color: #007bff;
+    color: white;
 }
 
-.table th{
-    text-align: center;
+.table td.color {
+    background-color: #f4f4f4;
+}
+
+.table td.color-electricity {
+    background-color: #ffeb3b;
+}
+
+.table td.color-tomato {
+    background-color: #ff6347;
+    color: white;
+}
+
+.table td.color-greenyellow {
+    background-color: #adff2f;
+    font-weight: bold;
+}
+
+.total-label {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
 }

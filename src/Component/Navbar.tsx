@@ -143,9 +143,14 @@ const Navbar: React.FC = () => {
             label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
         },
         role === 'admin' && {
-            key: 'maintenanceHistory',
+            key: 'ElectricityRate',
             icon: <ToolOutlined />,
             label: <Link to="/ElectricityRate" className="menu-label">ElectricityRate</Link>,
+        },
+        role === 'admin' && {
+            key: 'Showelectricity',
+            icon: <ToolOutlined />,
+            label: <Link to="/Showelectricity" className="menu-label">Showelectricity</Link>,
         },
         role === 'user' && {
             key: 'profile',
