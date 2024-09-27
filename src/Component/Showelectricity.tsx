@@ -24,6 +24,13 @@ const Showelectricity: React.FC = () => {
     const [selectedYear, setSelectedYear] = useState("2567");
     const [electricityData, setElectricityData] = useState<ElectricityDataState>({});
 
+    // Define the order of the rooms
+    const roomOrder = [
+        '201', '202', '203', '204', '205', '206', '207', '208',
+        '309', '310', '311', '312', '313', '314', '315', '316',
+        '225', '226', '227', '228', '329', '330', '331', '332'
+    ];
+
     useEffect(() => {
         fetchDataForMonth(selectedMonth, selectedYear);
     }, [selectedMonth, selectedYear]);
@@ -61,12 +68,12 @@ const Showelectricity: React.FC = () => {
 
     const downloadExcel = () => {
         // Prepare data for the Excel file
-        const data = Object.keys(electricityData).map(room => ({
+        const data = roomOrder.map(room => ({
             Room: room,
-            Previous: electricityData[room].previous,
-            Current: electricityData[room].current,
-            Units: electricityData[room].units,
-            Amount: Math.round(parseFloat(electricityData[room].amount) || 0)
+            Previous: electricityData[room]?.previous || '',
+            Current: electricityData[room]?.current || '',
+            Units: electricityData[room]?.units || '',
+            Amount: Math.round(parseFloat(electricityData[room]?.amount) || 0)
         }));
 
         // Add a total row
@@ -122,10 +129,10 @@ const Showelectricity: React.FC = () => {
                             <option value="2567">2567</option>
                             <option value="2568">2568</option>
                             <option value="2569">2569</option>
-                            <option value="2568">2570</option>
-                            <option value="2569">2571</option>
-                            <option value="2568">2572</option>
-                            <option value="2569">2573</option>
+                            <option value="2570">2570</option>
+                            <option value="2571">2571</option>
+                            <option value="2572">2572</option>
+                            <option value="2573">2573</option>
                             {/* Add more years as needed */}
                         </select>
                     </div>
@@ -143,13 +150,13 @@ const Showelectricity: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(electricityData).map(room => (
+                            {roomOrder.map(room => (
                                 <tr key={room}>
                                     <th>{room}</th>
-                                    <td className="color">{electricityData[room].previous}</td>
-                                    <td className="color-electricity">{electricityData[room].current}</td>
-                                    <td className="color-tomato">{electricityData[room].units}</td>
-                                    <td className="color-greenyellow">{Math.round(parseFloat(electricityData[room].amount) || 0)}</td>
+                                    <td className="color">{electricityData[room]?.previous || ''}</td>
+                                    <td className="color-electricity">{electricityData[room]?.current || ''}</td>
+                                    <td className="color-tomato">{electricityData[room]?.units || ''}</td>
+                                    <td className="color-greenyellow">{Math.round(parseFloat(electricityData[room]?.amount) || 0)}</td>
                                 </tr>
                             ))}
                             <tr>

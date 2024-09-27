@@ -25,17 +25,16 @@ const getPreviousMonth = (currentMonth: string): string => {
         "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม",
         "พฤศจิกายน", "ธันวาคม"
     ];
-    const currentMonthName = currentMonth.split(' ')[0]; // Extract month name
-    const index = months.indexOf(currentMonthName);
-    return index > 0 ? `${months[index - 1]} ${currentMonth.split(' ')[1]}` : `${months[months.length - 1]} ${currentMonth.split(' ')[1]}`;
+    const currentMonthIndex = months.indexOf(currentMonth);
+    return currentMonthIndex > 0 
+        ? months[currentMonthIndex - 1] 
+        : months[months.length - 1]; // Wrap around to December if it's January
 };
 
 const ElectricityRate: React.FC = () => {
     const [selectedMonth, setSelectedMonth] = useState("มกราคม");
     const [selectedYear, setSelectedYear] = useState("2567");
-    const [electricityData, setElectricityData] = useState<ElectricityDataState>({
-        // Initialize with default values
-    });
+    const [electricityData, setElectricityData] = useState<ElectricityDataState>({});
 
     useEffect(() => {
         fetchDataForMonth(selectedMonth, selectedYear);
@@ -60,44 +59,27 @@ const ElectricityRate: React.FC = () => {
                 const fetchedData = docSnap.data() as ElectricityDataState;
 
                 // Merge fetched data with existing data
-                setElectricityData(prevData => {
-                    const updatedData = { ...prevData, ...fetchedData };
-                    return updatedData;
-                });
+                setElectricityData(prevData => ({ ...prevData, ...fetchedData }));
             } else {
-                // If no data exists, set default values
-                setElectricityData(prevData => ({
-                    ...prevData,
-                    '201': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '202': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '203': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '204': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '205': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '206': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '207': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '208': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '309': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '310': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '311': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '312': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '313': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '314': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '315': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '316': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '225': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '226': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '227': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '228': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '329': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '330': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '331': { previous: '0', current: '0', units: '0', amount: '0' },
-                    '332': { previous: '0', current: '0', units: '0', amount: '0' },
-                    // Add other rooms as needed
-                }));
+                // If no data exists, set default values for rooms
+                const defaultData = generateDefaultElectricityData();
+                setElectricityData(defaultData);
             }
         } catch (error) {
             console.error("Error fetching data: ", error);
         }
+    };
+
+    const generateDefaultElectricityData = (): ElectricityDataState => {
+        const roomNumbers = [
+            '201', '202', '203', '204', '205', '206', '207', '208', 
+            '309', '310', '311', '312', '313', '314', '315', '316', 
+            '225', '226', '227', '228', '329', '330', '331', '332'
+        ]; // Ordered rooms
+        return roomNumbers.reduce((acc, room) => {
+            acc[room] = { previous: '0', current: '0', units: '0', amount: '0' };
+            return acc;
+        }, {} as ElectricityDataState);
     };
 
     const fetchPreviousMonthData = async (month: string, year: string) => {
@@ -129,7 +111,6 @@ const ElectricityRate: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchDataForMonth(selectedMonth, selectedYear);
         if (selectedMonth !== "มกราคม") {
             fetchPreviousMonthData(selectedMonth, selectedYear);
         }
@@ -156,6 +137,7 @@ const ElectricityRate: React.FC = () => {
                 },
             };
 
+            // Calculate units and amount based on the previous and current values
             if (field === 'previous' || field === 'current') {
                 updatedData[room].units = calculateUnits(updatedData[room].previous, updatedData[room].current);
                 updatedData[room].amount = calculateAmount(updatedData[room].units);
@@ -170,15 +152,15 @@ const ElectricityRate: React.FC = () => {
     };
 
     const calculateUnits = (previous: string, current: string): string => {
-        const previousValue = parseInt(previous, 10);
-        const currentValue = parseInt(current, 10);
+        const previousValue = parseInt(previous, 10) || 0;
+        const currentValue = parseInt(current, 10) || 0;
         const units = currentValue - previousValue;
-        return units.toString();
+        return Math.max(units, 0).toString(); // Ensure units are not negative
     };
 
     const calculateAmount = (units: string): string => {
-        const unitsValue = parseInt(units, 10);
-        const amount = unitsValue * 9;
+        const unitsValue = parseInt(units, 10) || 0;
+        const amount = unitsValue * 9; // Replace 9 with your rate per unit if necessary
         return amount.toString();
     };
 
@@ -190,7 +172,7 @@ const ElectricityRate: React.FC = () => {
 
     return (
         <>
-        <Navbar/>
+            <Navbar />
             <div className="electricityrate-container">
                 <div className="electricityrate">
                     <h3>เลือกรอบจดมิเตอร์ไฟฟ้า</h3>
@@ -201,18 +183,9 @@ const ElectricityRate: React.FC = () => {
                             value={selectedMonth}
                             onChange={handleMonthChange}
                         >
-                            <option value="มกราคม">มกราคม</option>
-                            <option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                            <option value="มีนาคม">มีนาคม</option>
-                            <option value="เมษายน">เมษายน</option>
-                            <option value="พฤษภาคม">พฤษภาคม</option>
-                            <option value="มิถุนายน">มิถุนายน</option>
-                            <option value="กรกฎาคม">กรกฎาคม</option>
-                            <option value="สิงหาคม">สิงหาคม</option>
-                            <option value="กันยายน">กันยายน</option>
-                            <option value="ตุลาคม">ตุลาคม</option>
-                            <option value="พฤศจิกายน">พฤศจิกายน</option>
-                            <option value="ธันวาคม">ธันวาคม</option>
+                            {["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"].map((month) => (
+                                <option key={month} value={month}>{month}</option>
+                            ))}
                         </select>
                         <select
                             className="form-select"
@@ -220,14 +193,9 @@ const ElectricityRate: React.FC = () => {
                             value={selectedYear}
                             onChange={handleYearChange}
                         >
-                            <option value="2567">2567</option>
-                            <option value="2568">2568</option>
-                            <option value="2569">2569</option>
-                            <option value="2570">2570</option>
-                            <option value="2571">2571</option>
-                            <option value="2572">2572</option>
-                            <option value="2573">2573</option>
-                            {/* Add more years as needed */}
+                            {Array.from({ length: 6 }, (_, i) => (2567 + i)).map((year) => (
+                                <option key={year} value={year.toString()}>{year}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -246,53 +214,51 @@ const ElectricityRate: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.keys(electricityData).map(room => (
+                            {/* Ordered room numbers */}
+                            {[
+                                '201', '202', '203', '204', '205', '206', '207', '208',
+                                '309', '310', '311', '312', '313', '314', '315', '316',
+                                '225', '226', '227', '228', '329', '330', '331', '332'
+                            ].map(room => (
                                 <tr key={room}>
-                                    <th>{room}</th>
-                                    <td className="color">
+                                    <td>{room}</td>
+                                    <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room].previous}
+                                            value={electricityData[room]?.previous}
                                             onChange={(e) => handleInputChange(room, 'previous', e.target.value)}
                                         />
                                     </td>
-                                    <td className="color-electricity">
+                                    <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room].current}
+                                            value={electricityData[room]?.current}
                                             onChange={(e) => handleInputChange(room, 'current', e.target.value)}
                                         />
                                     </td>
-                                    <td className="color-tomato">
+                                    <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room].units}
-                                            onChange={(e) => handleInputChange(room, 'units', e.target.value)}
+                                            value={electricityData[room]?.units}
+                                            readOnly
                                         />
                                     </td>
-                                    <td className="color-greenyellow">
+                                    <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room].amount}
-                                            onChange={(e) => handleInputChange(room, 'amount', e.target.value)}
+                                            value={electricityData[room]?.amount}
+                                            readOnly
                                         />
                                     </td>
                                 </tr>
                             ))}
-                            <tr>
-                                <td colSpan={4} className="total-label">Total Amount:</td>
-                                <td className="color-greenyellow">{calculateTotalAmount()}</td>
-                            </tr>
                         </tbody>
                     </table>
-                    <div className="save-button">
-                        <button className="btn btn-primary" onClick={saveDataToFirestore}>
-                            บันทึก
-                        </button>
-                    </div>
                 </div>
+                <h4>{`รวมยอดเงิน: ${calculateTotalAmount()} บาท`}</h4>
+                <button onClick={saveDataToFirestore}>บันทึกข้อมูล</button>
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 };

@@ -145,12 +145,17 @@ const Navbar: React.FC = () => {
         role === 'admin' && {
             key: 'ElectricityRate',
             icon: <ToolOutlined />,
-            label: <Link to="/ElectricityRate" className="menu-label">ElectricityRate</Link>,
+            label: <Link to="/ElectricityRate" className="menu-label">จดมิเตอร์</Link>,
         },
         role === 'admin' && {
             key: 'Showelectricity',
             icon: <ToolOutlined />,
-            label: <Link to="/Showelectricity" className="menu-label">Showelectricity</Link>,
+            label: <Link to="/Showelectricity" className="menu-label">ข้อมูลการใช้ไฟ</Link>,
+        },
+        role === 'admin' && {
+            key: 'InvoiceForm',
+            icon: <ToolOutlined />,
+            label: <Link to="/InvoiceForm" className="menu-label">ใบแจ้งหนี้</Link>,
         },
         role === 'user' && {
             key: 'profile',
