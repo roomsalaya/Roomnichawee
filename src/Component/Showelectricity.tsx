@@ -96,7 +96,7 @@ const Showelectricity: React.FC = () => {
 
     return (
         <>
-        <Navbar/>
+            <Navbar />
             <div className="showelectricity-container">
                 <div className="showelectricityr">
                     <h3>ดูข้อมูลการใช้ไฟฟ้า</h3>
@@ -126,14 +126,9 @@ const Showelectricity: React.FC = () => {
                             value={selectedYear}
                             onChange={handleYearChange}
                         >
-                            <option value="2567">2567</option>
-                            <option value="2568">2568</option>
-                            <option value="2569">2569</option>
-                            <option value="2570">2570</option>
-                            <option value="2571">2571</option>
-                            <option value="2572">2572</option>
-                            <option value="2573">2573</option>
-                            {/* Add more years as needed */}
+                            {Array.from({ length: 10 }, (_, i) => (2567 + i)).map((year) => (
+                                <option key={year} value={year.toString()}>{year}</option>
+                            ))}
                         </select>
                     </div>
                     <button onClick={downloadExcel}>ดาวน์โหลด Excel</button>
@@ -169,7 +164,7 @@ const Showelectricity: React.FC = () => {
                     </table>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 };

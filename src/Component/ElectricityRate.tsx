@@ -197,7 +197,7 @@ const ElectricityRate: React.FC = () => {
                             value={selectedYear}
                             onChange={handleYearChange}
                         >
-                            {Array.from({ length: 6 }, (_, i) => (2567 + i)).map((year) => (
+                            {Array.from({ length: 10 }, (_, i) => (2567 + i)).map((year) => (
                                 <option key={year} value={year.toString()}>{year}</option>
                             ))}
                         </select>
@@ -248,8 +248,8 @@ const ElectricityRate: React.FC = () => {
                     </table>
                 </div>
                 <div className="save-button-container">
+                <h4>จำนวนเงินรวม: {calculateTotalAmount()} บาท</h4>
                     <button onClick={saveDataToFirestore} className="btn btn-primary">บันทึกข้อมูล</button>
-                    <h5>จำนวนเงินรวม: {calculateTotalAmount()} บาท</h5>
                 </div>
             </div>
             <Footer />

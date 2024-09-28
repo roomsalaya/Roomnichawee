@@ -6,6 +6,7 @@
     align-items: center;
     padding: 20px;
     background-color: #f0f2f5; /* Ant Design's light background color */
+    min-height: 100vh;
 }
 
 .home-carousel-container {
@@ -34,13 +35,16 @@
     width: 100%;
 }
 
-.footer {
-    width: 100%; /* ความกว้างเต็ม */
-    padding: 1rem;
-    background-color: #f0f0f0;
+footer {
     text-align: center;
-    position: relative; /* ตำแหน่งสัมพันธ์กับพ่อ */
-    bottom: 0; /* ตำแหน่งที่ด้านล่าง */
+    background-color: #f1f1f1;
+    padding: 10px 0;
+    position: relative;
+    width: 100%;
+}
+
+.footer {
+    margin-top: auto;
 }
 
 /* Responsive styles */
