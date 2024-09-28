@@ -119,7 +119,11 @@ const ElectricityRate: React.FC = () => {
     const saveDataToFirestore = async () => {
         const monthYear = `${selectedMonth} ${selectedYear}`;
         try {
-            await setDoc(doc(db, "electricityData", monthYear), electricityData);
+            // Create a structured object to save in Firestore
+            const structuredData = {
+                roomData: electricityData
+            };
+            await setDoc(doc(db, "electricityData", monthYear), structuredData);
             alert("Data saved successfully!");
         } catch (error) {
             console.error("Error saving data: ", error);
@@ -219,44 +223,34 @@ const ElectricityRate: React.FC = () => {
                                 '201', '202', '203', '204', '205', '206', '207', '208',
                                 '309', '310', '311', '312', '313', '314', '315', '316',
                                 '225', '226', '227', '228', '329', '330', '331', '332'
-                            ].map(room => (
+                            ].map((room) => (
                                 <tr key={room}>
                                     <td>{room}</td>
                                     <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room]?.previous}
+                                            value={electricityData[room]?.previous || ''}
                                             onChange={(e) => handleInputChange(room, 'previous', e.target.value)}
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room]?.current}
+                                            value={electricityData[room]?.current || ''}
                                             onChange={(e) => handleInputChange(room, 'current', e.target.value)}
                                         />
                                     </td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            value={electricityData[room]?.units}
-                                            readOnly
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            value={electricityData[room]?.amount}
-                                            readOnly
-                                        />
-                                    </td>
+                                    <td>{electricityData[room]?.units}</td>
+                                    <td>{electricityData[room]?.amount}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-                <h4>{`รวมยอดเงิน: ${calculateTotalAmount()} บาท`}</h4>
-                <button onClick={saveDataToFirestore}>บันทึกข้อมูล</button>
+                <div className="save-button-container">
+                    <button onClick={saveDataToFirestore} className="btn btn-primary">บันทึกข้อมูล</button>
+                    <h5>จำนวนเงินรวม: {calculateTotalAmount()} บาท</h5>
+                </div>
             </div>
             <Footer />
         </>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Select, Input } from 'antd';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import './InvoiceForm.css'; // นำเข้าไฟล์ CSS
+import './InvoiceForm.css'; // Import CSS
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -11,13 +11,18 @@ interface UserData {
     name: string;
     room: string;
     rent: number;
-    electricity: number;
+    electricity: number; // Keep this in case individual electricity rates exist
     water: number;
+}
+
+interface ElectricityData {
+    room: string;
+    amount: number; // Example structure for electricity data
 }
 
 interface Invoice {
     month: string;
-    year: number;  // Add year to Invoice interface
+    year: number;
     name: string;
     room: string;
     rent: number;
@@ -49,7 +54,7 @@ const InvoiceForm: React.FC = () => {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [formData, setFormData] = useState({
         month: '',
-        year: currentYear, // Add year to formData
+        year: currentYear,
         name: '',
         room: '',
         rent: 0,
@@ -60,22 +65,31 @@ const InvoiceForm: React.FC = () => {
         status: 'pending',
     });
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [users, setUsers] = useState<UserData[]>([]); // เก็บข้อมูลผู้ใช้จาก Firestore
-    const [selectedRoom, setSelectedRoom] = useState<string>(''); // ห้องที่เลือก
-    const [selectedMonth, setSelectedMonth] = useState<string>(''); // เดือนที่เลือก
+    const [users, setUsers] = useState<UserData[]>([]);
+    const [electricityData, setElectricityData] = useState<ElectricityData[]>([]);
+    const [selectedRoom, setSelectedRoom] = useState<string>(''); 
+    const [selectedMonth, setSelectedMonth] = useState<string>(''); 
 
     const db = getFirestore();
 
-    // ดึงข้อมูล users จาก Firestore
+    // Fetch user data and electricity data from Firestore
     useEffect(() => {
         const fetchUserData = async () => {
-            const usersCollection = collection(db, 'users'); // สมมุติว่ามี collection ชื่อ 'users'
+            const usersCollection = collection(db, 'users');
             const usersSnapshot = await getDocs(usersCollection);
             const usersList = usersSnapshot.docs.map((doc) => doc.data() as UserData);
             setUsers(usersList);
         };
 
+        const fetchElectricityData = async () => {
+            const electricityCollection = collection(db, 'electricityData'); // Adjust collection name
+            const electricitySnapshot = await getDocs(electricityCollection);
+            const electricityList = electricitySnapshot.docs.map((doc) => doc.data() as ElectricityData);
+            setElectricityData(electricityList);
+        };
+
         fetchUserData();
+        fetchElectricityData();
     }, [db]);
 
     const showModal = () => {
@@ -93,13 +107,15 @@ const InvoiceForm: React.FC = () => {
     const handleRoomSelect = (value: string) => {
         setSelectedRoom(value);
         const userData = users.find(user => user.room === value);
+        const electricity = electricityData.find(data => data.room === value)?.amount || 0; // Fetch electricity data based on room
+
         if (userData) {
             setFormData({
                 ...formData,
                 name: userData.name,
                 room: userData.room,
                 rent: userData.rent,
-                electricity: userData.electricity,
+                electricity, // Set electricity from fetched data
                 water: userData.water,
             });
         }
@@ -110,7 +126,7 @@ const InvoiceForm: React.FC = () => {
         setFormData({
             ...formData,
             month: value,
-            year: currentYear, // Set year when month is selected
+            year: currentYear,
         });
     };
 
@@ -118,7 +134,7 @@ const InvoiceForm: React.FC = () => {
         e.preventDefault();
         const newInvoice = { ...formData, total: calculateTotal() };
         setInvoices([...invoices, newInvoice]);
-        handleCancel(); // ปิด Modal หลังจากเพิ่มรายการ
+        handleCancel();
     };
 
     const calculateTotal = () => {
@@ -210,42 +226,6 @@ const InvoiceForm: React.FC = () => {
                         <button type="submit">เพิ่มรายการ</button>
                     </form>
                 </Modal>
-
-                <h3>รายการแจ้งหนี้</h3>
-                <div className="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>เดือน</th>
-                                <th>ปี</th> {/* Add Year column */}
-                                <th>ชื่อ</th>
-                                <th>ห้อง</th>
-                                <th>ค่าเช่า</th>
-                                <th>ค่าไฟ</th>
-                                <th>ค่าน้ำ</th>
-                                <th>ค่าปรับ</th>
-                                <th>รวม</th>
-                                <th>สถานะ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {invoices.map((invoice, index) => (
-                                <tr key={index}>
-                                    <td>{months.find(m => m.value === invoice.month)?.label}</td>
-                                    <td>{invoice.year}</td> {/* Display the year */}
-                                    <td>{invoice.name}</td>
-                                    <td>{invoice.room}</td>
-                                    <td>{invoice.rent}</td>
-                                    <td>{invoice.electricity}</td>
-                                    <td>{invoice.water}</td>
-                                    <td>{invoice.fine}</td>
-                                    <td>{invoice.total}</td>
-                                    <td>{invoice.status}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
             </div>
             <Footer />
         </>

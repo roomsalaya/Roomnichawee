@@ -3,7 +3,8 @@ import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
 import {
     LoginOutlined, UserOutlined, DashboardOutlined,
     HomeOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
-    AlertOutlined, ToolOutlined
+    AlertOutlined, ToolOutlined, BulbOutlined, FileDoneOutlined,
+    AuditOutlined
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
@@ -144,17 +145,17 @@ const Navbar: React.FC = () => {
         },
         role === 'admin' && {
             key: 'ElectricityRate',
-            icon: <ToolOutlined />,
+            icon: <BulbOutlined />,
             label: <Link to="/ElectricityRate" className="menu-label">จดมิเตอร์</Link>,
         },
         role === 'admin' && {
             key: 'Showelectricity',
-            icon: <ToolOutlined />,
+            icon: <AuditOutlined />,
             label: <Link to="/Showelectricity" className="menu-label">ข้อมูลการใช้ไฟ</Link>,
         },
         role === 'admin' && {
             key: 'InvoiceForm',
-            icon: <ToolOutlined />,
+            icon: <FileDoneOutlined />,
             label: <Link to="/InvoiceForm" className="menu-label">ใบแจ้งหนี้</Link>,
         },
         role === 'user' && {
