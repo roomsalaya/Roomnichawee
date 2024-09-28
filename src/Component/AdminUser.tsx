@@ -3,7 +3,6 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { Row, Col, Card, Button, Spin, message, Modal } from 'antd'; // นำเข้า Modal จาก Ant Design
 import Navbar from './Navbar';
-import './AdminUser.css'; // นำเข้าไฟล์ CSS ของคุณสำหรับการจัดรูปแบบ
 import Footer from './Footer';
 
 // กำหนดประเภทของผู้ใช้พร้อมสถานะห้อง
@@ -159,6 +158,7 @@ const AdminUser: React.FC = () => {
                                 ชื่อ:
                                 <input
                                     type="text"
+                                    className="input-field" // Added class
                                     value={updatedUser?.name || ''}
                                     onChange={(e) => handleInputChange(e, 'name')}
                                 />
@@ -167,6 +167,7 @@ const AdminUser: React.FC = () => {
                                 ห้อง:
                                 <input
                                     type="text"
+                                    className="input-field" // Added class
                                     value={updatedUser?.room || ''}
                                     onChange={(e) => handleInputChange(e, 'room')}
                                 />
@@ -175,6 +176,7 @@ const AdminUser: React.FC = () => {
                                 อีเมล:
                                 <input
                                     type="text"
+                                    className="input-field" // Added class
                                     value={updatedUser?.email || ''}
                                     onChange={(e) => handleInputChange(e, 'email')}
                                 />
@@ -183,6 +185,7 @@ const AdminUser: React.FC = () => {
                                 เบอร์โทรศัพท์:
                                 <input
                                     type="text"
+                                    className="input-field" // Added class
                                     value={updatedUser?.phone || ''}
                                     onChange={(e) => handleInputChange(e, 'phone')}
                                 />
@@ -191,6 +194,7 @@ const AdminUser: React.FC = () => {
                                 สัญญาเช่า:
                                 <input
                                     type="text"
+                                    className="input-field" // Added class
                                     value={updatedUser?.rental || ''}
                                     onChange={(e) => handleInputChange(e, 'rental')}
                                 />
@@ -199,6 +203,7 @@ const AdminUser: React.FC = () => {
                                 ค่าเช่า:
                                 <input
                                     type="number"
+                                    className="input-field" // Added class
                                     value={updatedUser?.Rent || ''}
                                     onChange={(e) => handleInputChange(e, 'Rent')}
                                 />
@@ -207,6 +212,7 @@ const AdminUser: React.FC = () => {
                                 ค่าน้ำ:
                                 <input
                                     type="number"
+                                    className="input-field" // Added class
                                     value={updatedUser?.water || ''}
                                     onChange={(e) => handleInputChange(e, 'water')}
                                 />
@@ -215,6 +221,7 @@ const AdminUser: React.FC = () => {
                                 ค่าไฟ หน่วยละ:
                                 <input
                                     type="number"
+                                    className="input-field" // Added class
                                     value={updatedUser?.electricity || ''}
                                     onChange={(e) => handleInputChange(e, 'electricity')}
                                 />
@@ -222,6 +229,7 @@ const AdminUser: React.FC = () => {
                             <label>
                                 สถานะห้อง:
                                 <select
+                                    className="select-field" // Added class
                                     value={updatedUser?.roomStatus || 'occupied'}
                                     onChange={(e) => handleInputChange(e, 'roomStatus' as keyof User)}
                                 >

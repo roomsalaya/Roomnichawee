@@ -1,71 +1,67 @@
+/* AdminUser.css */
+
+/* Container for the admin user management */
 .admin-container {
     padding: 20px;
-    background-color: #f0f2f5; /* Light background color */
-    min-height: 100vh; /* Full height for the container */
 }
 
-.h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333; /* Dark text color */
-    font-family: "Anuphan", system-ui;
+/* Style for user cards */
+.user-list {
+    margin-top: 20px;
 }
 
+/* Card styles */
 .user-card {
-    background-color: #fff; /* White background for cards */
-    border: 1px solid #d9d9d9; /* Light border for cards */
+    transition: transform 0.2s;
+    cursor: pointer;
     border-radius: 8px; /* Rounded corners */
-    transition: all 0.3s ease; /* Smooth transition for hover effect */
 }
 
-.ant-modal-header {
-    background-color: #40a9ff; /* Header color for modal */
-    color: white; /* Text color for modal header */
+.user-card:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
+/* Selected user card style */
+.user-card.selected {
+    border: 2px solid #40a9ff; /* Highlight border for selected user */
+}
+
+/* Input fields styling */
+.input-field,
+.select-field {
+    width: 100%;
+    padding: 10px; /* Increased padding for better touch target */
+    border: 1px solid #d9d9d9;
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 16px; /* Increased margin for spacing */
+    font-size: 14px; /* Standard font size */
+    transition: border-color 0.3s; /* Smooth transition for focus effect */
+}
+
+/* Focus effect for input fields */
+.input-field:focus,
+.select-field:focus {
+    border-color: #40a9ff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(64, 169, 255, 0.5); /* Optional shadow effect */
+}
+
+/* Modal styling */
 .ant-modal-title {
-    font-size: 18px; /* Title font size */
-    font-weight: bold; /* Bold title */
-    font-family: "Anuphan", system-ui;
-    color: #40a9ff;
+    font-size: 18px; /* Larger font for modal title */
 }
 
-.ant-modal-footer {
-    display: flex;
-    justify-content: space-between; /* Space out footer buttons */
+.ant-modal-body {
+    padding: 20px; /* Padding for modal body */
 }
 
-form {
-    display: flex;
-    flex-direction: column; /* Column layout for form fields */
-    font-family: "Anuphan", system-ui;
+/* Button styles */
+.ant-btn {
+    border-radius: 4px; /* Rounded corners for buttons */
 }
 
-label {
-    margin-bottom: 10px; /* Space between labels */
-    font-weight: 600; /* Bold labels */
-    font-family: "Anuphan", system-ui;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="number"],
-select {
-    padding: 10px; /* Padding inside inputs */
-    border: 1px solid #d9d9d9; /* Border for inputs */
-    border-radius: 4px; /* Rounded corners for inputs */
-    margin-top: 5px; /* Space above inputs */
-    width: 100%; /* Full width for inputs */
-    font-family: "Anuphan", system-ui;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-select:focus {
-    border-color: #40a9ff; /* Border color on focus */
-    outline: none; /* Remove outline */
-}
-
-button {
-    margin-top: 10px; /* Space above buttons */
+/* Add margin for buttons in the modal */
+.modal-buttons {
+    margin-top: 16px;
 }
