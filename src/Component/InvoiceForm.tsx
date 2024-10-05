@@ -22,7 +22,8 @@ const InvoiceForm: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [form] = Form.useForm();
-    const [electricityData, setElectricityData] = useState<ElectricityData>({}); // Use the defined interface
+    const [electricityData, setElectricityData] = useState<ElectricityData>({});
+    const [totalAmount, setTotalAmount] = useState<number>(0); // State for total amount
     const firestore = getFirestore();
 
     // Fetch all users data from Firestore
@@ -47,15 +48,14 @@ const InvoiceForm: React.FC = () => {
     // Fetch electricity data for the selected month and year
     useEffect(() => {
         const fetchElectricityData = async () => {
-            // แปลงปีสากลเป็นปีไทยโดยบวก 543
             const thaiYear = selectedYear + 543;
-            const monthYear = `${selectedMonth} ${thaiYear}`; // ใช้เดือนและปีไทยในการดึงข้อมูล
+            const monthYear = `${selectedMonth} ${thaiYear}`;
 
             try {
                 const docRef = doc(firestore, "electricityData", monthYear);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    setElectricityData(docSnap.data() as ElectricityData); // Cast to the defined type
+                    setElectricityData(docSnap.data() as ElectricityData);
                 } else {
                     console.log("No electricity data found for the selected month and year.");
                     setElectricityData(initializeDefaultElectricityData());
@@ -68,7 +68,6 @@ const InvoiceForm: React.FC = () => {
         fetchElectricityData();
     }, [selectedMonth, selectedYear, firestore]);
 
-
     const initializeDefaultElectricityData = () => {
         const roomNumbers = ['201', '202', '203', '204', '205', '206', '207', '208',
             '309', '310', '311', '312', '313', '314', '315', '316',
@@ -76,7 +75,7 @@ const InvoiceForm: React.FC = () => {
         return roomNumbers.reduce((acc, room) => {
             acc[room] = { previous: '0', current: '0', units: '0', amount: '0' };
             return acc;
-        }, {} as ElectricityData); // Specify type here
+        }, {} as ElectricityData);
     };
 
     const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -90,6 +89,7 @@ const InvoiceForm: React.FC = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
         form.resetFields();
+        setTotalAmount(0); // Reset total amount
     };
 
     const handleUpdate = () => {
@@ -106,6 +106,20 @@ const InvoiceForm: React.FC = () => {
             roomStatus: user.roomStatus || ''
         });
         setIsModalVisible(true);
+        calculateTotal(user.rent, user.water, electricityData[user.room]?.amount);
+    };
+
+    const calculateTotal = (rent: string | undefined, water: string | undefined, electricity: string | undefined) => {
+        const rentAmount = parseFloat(rent || '0');
+        const waterAmount = parseFloat(water || '0');
+        const electricityAmount = parseFloat(electricity || '0');
+        const total = rentAmount + waterAmount + electricityAmount;
+        setTotalAmount(total); // Update the total amount
+    };
+
+    const handleFieldChange = (changedFields: any) => {
+        const { rent, water } = changedFields;
+        calculateTotal(rent, water, electricityData[selectedUser?.room]?.amount);
     };
 
     return (
@@ -160,7 +174,7 @@ const InvoiceForm: React.FC = () => {
                     footer={null}
                 >
                     {selectedUser && (
-                        <Form form={form} layout="vertical">
+                        <Form form={form} layout="vertical" onValuesChange={(_, allValues) => handleFieldChange(allValues)}>
                             <Form.Item label="ค่าเช่า" name="rent">
                                 <Input placeholder="ใส่ค่าเช่า" />
                             </Form.Item>
@@ -175,6 +189,10 @@ const InvoiceForm: React.FC = () => {
                                     disabled
                                     value={electricityData[selectedUser.room]?.amount || 'ไม่ระบุ'}
                                 />
+                            </Form.Item>
+
+                            <Form.Item label="รวมยอด" name="total">
+                                <Input disabled value={`${totalAmount} บาท`} />
                             </Form.Item>
 
                             <Form.Item label="สถานะห้อง" name="roomStatus">
