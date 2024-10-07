@@ -163,6 +163,11 @@ const Navbar: React.FC = () => {
             icon: <UserOutlined />,
             label: <Link to="/profile" className="menu-label">โปรไฟล์</Link>,
         },
+        role === 'user' && {
+            key: 'SentInvoiceForm',
+            icon: <UserOutlined />,
+            label: <Link to="/SentInvoiceForm" className="menu-label">SentInvoiceForm</Link>,
+        },
         role && {
             key: 'logout',
             icon: <LoginOutlined />,

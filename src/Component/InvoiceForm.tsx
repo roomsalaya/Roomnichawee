@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, Card, Spin } from 'antd';
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { Modal, Form, Input, Card, Spin, Switch, message } from 'antd'; // Import message for notifications
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './InvoiceForm.css';
@@ -26,7 +26,6 @@ const InvoiceForm: React.FC = () => {
     const [totalAmount, setTotalAmount] = useState<number>(0); // State for total amount
     const firestore = getFirestore();
 
-    // Fetch all users data from Firestore
     useEffect(() => {
         const fetchUsersData = async () => {
             setLoading(true);
@@ -45,7 +44,6 @@ const InvoiceForm: React.FC = () => {
         fetchUsersData();
     }, [firestore]);
 
-    // Fetch electricity data for the selected month and year
     useEffect(() => {
         const fetchElectricityData = async () => {
             const thaiYear = selectedYear + 543;
@@ -92,35 +90,61 @@ const InvoiceForm: React.FC = () => {
         setTotalAmount(0); // Reset total amount
     };
 
-    const handleUpdate = () => {
-        console.log("ทำการส่งบิลแจ้งหนี้ค่าเช่าไปยังผู้ใช้");
-        setIsModalVisible(false);
+    const handleUpdate = async () => {
+        try {
+            const invoiceData = {
+                userId: selectedUser.id,
+                month: selectedMonth,
+                year: selectedYear,
+                rent: form.getFieldValue('rent'),
+                water: form.getFieldValue('water'),
+                electricity: electricityData[selectedUser.room]?.amount || 'ไม่ระบุ',
+                fine: form.getFieldValue('fine'), // Add fine data
+                total: totalAmount,
+                roomStatus: form.getFieldValue('roomStatus') ? 'จ่ายแล้ว' : 'ค้างชำระ',
+            };
+
+            // Save the invoice data to Firestore
+            const invoiceRef = doc(collection(firestore, "invoices"));
+            await setDoc(invoiceRef, invoiceData);
+            message.success("บิลแจ้งหนี้ถูกส่งเรียบร้อยแล้ว!"); // Success message
+            setIsModalVisible(false);
+            form.resetFields();
+            setTotalAmount(0); // Reset total amount after submission
+        } catch (error) {
+            console.error("Error saving invoice data: ", error);
+            message.error("เกิดข้อผิดพลาดในการส่งบิลแจ้งหนี้"); // Error message
+        }
     };
 
     const showModal = (user: any) => {
         setSelectedUser(user);
         form.setFieldsValue({
+            room: user.room || 'ไม่ระบุ',
             rent: user.rent || '',
             water: user.water || '',
             electricity: electricityData[user.room]?.amount || 'ไม่ระบุ',
-            roomStatus: user.roomStatus || ''
+            fine: '', // Initialize fine field
+            roomStatus: user.roomStatus || false,
+            total: `${calculateTotal(user.rent, user.water, electricityData[user.room]?.amount)}`,
         });
         setIsModalVisible(true);
-        calculateTotal(user.rent, user.water, electricityData[user.room]?.amount);
     };
 
-    const calculateTotal = (rent: string | undefined, water: string | undefined, electricity: string | undefined) => {
+    const calculateTotal = (rent: string | undefined, water: string | undefined, electricity: string | undefined, fine: string | undefined = '0') => {
         const rentAmount = parseFloat(rent || '0');
         const waterAmount = parseFloat(water || '0');
         const electricityAmount = parseFloat(electricity || '0');
-        const total = rentAmount + waterAmount + electricityAmount;
-        setTotalAmount(total); // Update the total amount
+        const fineAmount = parseFloat(fine || '0'); // Include fine in total
+        const total = rentAmount + waterAmount + electricityAmount + fineAmount; // Calculate total with fine
+        setTotalAmount(total); // Update total amount
+        form.setFieldsValue({ total: `${total}` }); // Update total field in the form
+        return total;
     };
 
-    const handleFieldChange = (changedFields: any) => {
-        const { rent, water } = changedFields;
-        calculateTotal(rent, water, electricityData[selectedUser?.room]?.amount);
-    };
+    const handleFieldChange = (_changedValues: any, allValues: any) => {
+        calculateTotal(allValues.rent, allValues.water, electricityData[selectedUser?.room]?.amount, allValues.fine);
+    };    
 
     return (
         <>
@@ -174,7 +198,11 @@ const InvoiceForm: React.FC = () => {
                     footer={null}
                 >
                     {selectedUser && (
-                        <Form form={form} layout="vertical" onValuesChange={(_, allValues) => handleFieldChange(allValues)}>
+                        <Form form={form} layout="vertical" onValuesChange={handleFieldChange}>
+                            <Form.Item label="ห้อง" name="room">
+                                <Input placeholder="ห้อง" disabled />
+                            </Form.Item>
+
                             <Form.Item label="ค่าเช่า" name="rent">
                                 <Input placeholder="ใส่ค่าเช่า" />
                             </Form.Item>
@@ -184,29 +212,26 @@ const InvoiceForm: React.FC = () => {
                             </Form.Item>
 
                             <Form.Item label="ค่าไฟ" name="electricity">
-                                <Input
-                                    placeholder="ค่าไฟ"
-                                    disabled
-                                    value={electricityData[selectedUser.room]?.amount || 'ไม่ระบุ'}
-                                />
+                                <Input placeholder="ค่าไฟ" disabled />
                             </Form.Item>
 
-                            <Form.Item label="รวมยอด" name="total">
-                                <Input disabled value={`${totalAmount} บาท`} />
+                            <Form.Item label="ค่าปรับ" name="fine">
+                                <Input placeholder="ใส่ค่าปรับ" />
                             </Form.Item>
 
-                            <Form.Item label="สถานะห้อง" name="roomStatus">
-                                <Input placeholder="ใส่สถานะห้อง" />
+                            <Form.Item label="สถานะห้อง" name="roomStatus" valuePropName="checked">
+                                <Switch checkedChildren="จ่ายแล้ว" unCheckedChildren="ค้างชำระ" />
                             </Form.Item>
 
-                            <div style={{ marginTop: '16px' }}>
-                                <button key="cancel" onClick={handleCancel} style={{ marginRight: '8px' }}>
-                                    ยกเลิก
-                                </button>
-                                <button key="submit" type="submit" onClick={handleUpdate}>
+                            <Form.Item label="รวม" name="total">
+                                <Input placeholder="ยอดรวมทั้งหมด" disabled />
+                            </Form.Item>
+
+                            <Form.Item>
+                                <button className="btn btn-primary" onClick={handleUpdate}>
                                     ส่งบิลแจ้งหนี้
                                 </button>
-                            </div>
+                            </Form.Item>
                         </Form>
                     )}
                 </Modal>
