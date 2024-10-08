@@ -1,41 +1,45 @@
+import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Component/Home';
 import './App.css';
-import Login from './Component/Login';
-import Profile from './Component/Profile';
-import Parcel from './Component/Parcel';
-import AdminDashboard from './Component/AdminDashboard';
-import AdminParcelPage from './Component/AdminParcelPage';
-import AdminUser from './Component/AdminUser';
-import MaintenanceReport from './Component/MaintenanceReport';
-import MaintenanceList from './Component/MaintenanceList';
-import MaintenanceListView from './Component/MaintenanceListView';
-import ElectricityRate from './Component/ElectricityRate';
-import Showelectricity from './Component/Showelectricity';
-import InvoiceForm from './Component/InvoiceForm';
-import React from 'react';
-import InvoicesTable from './Component/InvoicesTable';
+
+// Lazy load components
+const Home = lazy(() => import('./Component/Home'));
+const Login = lazy(() => import('./Component/Login'));
+const Profile = lazy(() => import('./Component/Profile'));
+const Parcel = lazy(() => import('./Component/Parcel'));
+const AdminDashboard = lazy(() => import('./Component/AdminDashboard'));
+const AdminParcelPage = lazy(() => import('./Component/AdminParcelPage'));
+const AdminUser = lazy(() => import('./Component/AdminUser'));
+const MaintenanceReport = lazy(() => import('./Component/MaintenanceReport'));
+const MaintenanceList = lazy(() => import('./Component/MaintenanceList'));
+const MaintenanceListView = lazy(() => import('./Component/MaintenanceListView'));
+const ElectricityRate = lazy(() => import('./Component/ElectricityRate'));
+const ShowElectricity = lazy(() => import('./Component/Showelectricity'));
+const InvoiceForm = lazy(() => import('./Component/InvoiceForm'));
+const InvoicesTable = lazy(() => import('./Component/InvoicesTable'));
 
 const App: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />  {/* Changed to lowercase */}
-        <Route path="/parcel" element={<Parcel />} />
-        <Route path='/adminparcelpage' element={<AdminParcelPage />} />
-        <Route path="/admindashboard" element={<AdminDashboard />} /> {/* Changed to lowercase */}
-        <Route path="/adminparcels" element={<AdminParcelPage />} />
-        <Route path="/adminusers" element={<AdminUser />} />
-        <Route path="/maintenancereport" element={<MaintenanceReport />} /> {/* Changed to lowercase */}
-        <Route path="/maintenancelist" element={<MaintenanceList />} />  {/* Changed to lowercase */}
-        <Route path='/maintenancelistview' element={<MaintenanceListView />} />
-        <Route path='/ElectricityRate' element={<ElectricityRate />} />
-        <Route path='/Showelectricity' element={<Showelectricity />} />
-        <Route path='/InvoiceForm' element={<InvoiceForm/>} />
-        <Route path='/InvoicesTable' element={<InvoicesTable/>} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/parcel" element={<Parcel />} />
+          <Route path="/adminparcelpage" element={<AdminParcelPage />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/adminparcels" element={<AdminParcelPage />} />
+          <Route path="/adminusers" element={<AdminUser />} />
+          <Route path="/maintenancereport" element={<MaintenanceReport />} />
+          <Route path="/maintenancelist" element={<MaintenanceList />} />
+          <Route path="/maintenancelistview" element={<MaintenanceListView />} />
+          <Route path="/ElectricityRate" element={<ElectricityRate />} />
+          <Route path="/Showelectricity" element={<ShowElectricity />} />
+          <Route path="/InvoiceForm" element={<InvoiceForm />} />
+          <Route path="/InvoicesTable" element={<InvoicesTable />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 };
