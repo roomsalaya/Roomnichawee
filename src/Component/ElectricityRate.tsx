@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebaseConfig"; // Adjust the import path based on your project structure
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./ElectricityRate.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -32,6 +33,7 @@ const getPreviousMonth = (currentMonth: string): string => {
 };
 
 const ElectricityRate: React.FC = () => {
+    const navigate = useNavigate(); // Create navigate function
     const [selectedMonth, setSelectedMonth] = useState("มกราคม");
     const [selectedYear, setSelectedYear] = useState("2567");
     const [electricityData, setElectricityData] = useState<ElectricityDataState>({});
@@ -223,21 +225,23 @@ const ElectricityRate: React.FC = () => {
                                 '201', '202', '203', '204', '205', '206', '207', '208',
                                 '309', '310', '311', '312', '313', '314', '315', '316',
                                 '225', '226', '227', '228', '329', '330', '331', '332'
-                            ].map((room) => (
+                            ].map(room => (
                                 <tr key={room}>
                                     <td>{room}</td>
                                     <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room]?.previous || ''}
+                                            value={electricityData[room]?.previous}
                                             onChange={(e) => handleInputChange(room, 'previous', e.target.value)}
+                                            placeholder="เลขก่อนหน้า"
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="number"
-                                            value={electricityData[room]?.current || ''}
+                                            value={electricityData[room]?.current}
                                             onChange={(e) => handleInputChange(room, 'current', e.target.value)}
+                                            placeholder="เลขล่าสุด"
                                         />
                                     </td>
                                     <td>{electricityData[room]?.units}</td>
@@ -246,13 +250,14 @@ const ElectricityRate: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
-                <div className="save-button-container">
-                <h4>จำนวนเงินรวม: {calculateTotalAmount()} บาท</h4>
+                    <h4>รวมจำนวนเงิน: {calculateTotalAmount()} บาท</h4>
                     <button onClick={saveDataToFirestore} className="btn btn-primary">บันทึกข้อมูล</button>
                 </div>
+                <button onClick={() => navigate("/Showelectricity")} className="btn btn-secondary">
+                    ดูการใช้ไฟฟ้า
+                </button>
+                <Footer />
             </div>
-            <Footer />
         </>
     );
 };

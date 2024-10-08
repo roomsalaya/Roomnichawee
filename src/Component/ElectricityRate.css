@@ -70,3 +70,7 @@
 .h4 {
     font-weight: normal;
 }
+
+.btn btn-secondary{
+    padding-bottom: 10px;
+}

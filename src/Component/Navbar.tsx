@@ -3,8 +3,7 @@ import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
 import {
     LoginOutlined, UserOutlined, DashboardOutlined,
     HomeOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
-    AlertOutlined, ToolOutlined, BulbOutlined, FileDoneOutlined,
-    AuditOutlined
+    ToolOutlined, BulbOutlined, FileDoneOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
@@ -134,11 +133,6 @@ const Navbar: React.FC = () => {
             label: <Link to="/parcel" className="menu-label">เพิ่มพัสดุ</Link>,
         },
         role === 'admin' && {
-            key: 'adminparcels',
-            icon: <AlertOutlined />,
-            label: <Link to="/MaintenanceReport" className="menu-label">แจ้งซ่อม</Link>,
-        },
-        role === 'admin' && {
             key: 'maintenanceHistory',
             icon: <ToolOutlined />,
             label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
@@ -147,11 +141,6 @@ const Navbar: React.FC = () => {
             key: 'ElectricityRate',
             icon: <BulbOutlined />,
             label: <Link to="/ElectricityRate" className="menu-label">จดมิเตอร์</Link>,
-        },
-        role === 'admin' && {
-            key: 'Showelectricity',
-            icon: <AuditOutlined />,
-            label: <Link to="/Showelectricity" className="menu-label">ข้อมูลการใช้ไฟ</Link>,
         },
         role === 'admin' && {
             key: 'InvoiceForm',
@@ -166,7 +155,7 @@ const Navbar: React.FC = () => {
         role === 'user' && {
             key: 'SentInvoiceForm',
             icon: <UserOutlined />,
-            label: <Link to="/SentInvoiceForm" className="menu-label">SentInvoiceForm</Link>,
+            label: <Link to="/InvoicesTable" className="menu-label">InvoicesTable</Link>,
         },
         role && {
             key: 'logout',

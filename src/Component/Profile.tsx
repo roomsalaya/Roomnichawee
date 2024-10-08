@@ -62,7 +62,7 @@ const Profile: React.FC = () => {
                             </tr>
                             <tr>
                                 <th>ค่าเช่า :</th>
-                                <td>{userData.Rent}</td>
+                                <td>{userData.rent}</td>
                             </tr>
                             <tr>
                                 <th>ค่าน้ำ :</th>

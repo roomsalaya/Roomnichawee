@@ -14,7 +14,7 @@ import ElectricityRate from './Component/ElectricityRate';
 import Showelectricity from './Component/Showelectricity';
 import InvoiceForm from './Component/InvoiceForm';
 import React from 'react';
-import SentInvoiceForm from './Component/SentInvoiceForm';
+import InvoicesTable from './Component/InvoicesTable';
 
 const App: React.FC = () => {
   return (
@@ -34,7 +34,7 @@ const App: React.FC = () => {
         <Route path='/ElectricityRate' element={<ElectricityRate />} />
         <Route path='/Showelectricity' element={<Showelectricity />} />
         <Route path='/InvoiceForm' element={<InvoiceForm/>} />
-        <Route path='/SentInvoiceForm' element={<SentInvoiceForm/>} />
+        <Route path='/InvoicesTable' element={<InvoicesTable/>} />
       </Routes>
     </Router>
   );

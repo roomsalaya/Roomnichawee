@@ -1,4 +1,4 @@
 .invoice-form-container{
     padding: 20px;
-    max-height: 100vh;
+    min-height: 100vh;
 }
