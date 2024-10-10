@@ -1,4 +1,71 @@
-.invoice-form-container{
-    padding: 20px;
-    min-height: 100vh;
+.invoice-form-container {
+    max-width: 800px; /* Limit max width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 20px; /* Add padding */
+    background-color: #f9f9f9; /* Light background color for contrast */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+h3 {
+    text-align: center; /* Center the heading */
+    color: #333; /* Darker text color */
+    margin-bottom: 20px; /* Space below heading */
+}
+
+.form-select {
+    width: 100%; /* Full width for select inputs */
+    margin-bottom: 15px; /* Space below select */
+    padding: 10px; /* Padding for comfort */
+    border-radius: 4px; /* Rounded corners */
+    border: 1px solid #ccc; /* Light border */
+    background-color: #fff; /* White background for select */
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap; /* Wrap cards if needed */
+    justify-content: center; /* Center the cards */
+    margin-top: 20px; /* Space above cards */
+}
+
+.ant-card {
+    margin: 10px; /* Space between cards */
+    transition: transform 0.2s; /* Smooth hover effect */
+    border: 1px solid #a7a7a7;
+}
+
+.ant-card:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.ant-modal {
+    border-radius: 8px; /* Rounded corners for modal */
+}
+
+.ant-form-item {
+    margin-bottom: 16px; /* Consistent spacing between form items */
+}
+
+.btn {
+    display: block; /* Block button for full width */
+    width: 100%; /* Full width button */
+    padding: 10px; /* Padding for comfort */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #007bff; /* Primary color */
+    color: #fff; /* White text */
+    font-size: 16px; /* Larger text for button */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s; /* Smooth color transition */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.btn:disabled {
+    background-color: #ccc; /* Gray background for disabled state */
+    cursor: not-allowed; /* Not-allowed cursor for disabled state */
 }

@@ -147,6 +147,11 @@ const Navbar: React.FC = () => {
             icon: <FileDoneOutlined />,
             label: <Link to="/InvoiceForm" className="menu-label">ใบแจ้งหนี้</Link>,
         },
+        role === 'admin' && {
+            key: 'InvoicesTableAdmin',
+            icon: <FileDoneOutlined />,
+            label: <Link to="/InvoicesTableAdmin" className="menu-label">InvoicesTableAdmin</Link>,
+        },
         role === 'user' && {
             key: 'profile',
             icon: <UserOutlined />,

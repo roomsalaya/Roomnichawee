@@ -7,14 +7,14 @@ import './InvoicesTable.css';
 
 interface InvoiceData {
     userId: string;
-    room: string;
+    room: string; // This will hold the room number
     month: string;
-    year: string; // ควรเป็นปี ค.ศ. ที่เก็บใน Firestore
-    rent: string;
-    water: string;
-    electricity: string;
-    fine: string;
-    total: string;
+    year: string; // This can stay as a string since you're converting it to Buddhist year later
+    rent: number; // Change from string to number
+    water: number; // Change from string to number
+    electricity: number; // Change from string to number
+    fine: number; // Change from string to number
+    total: number; // Change from string to number
     roomStatus: string;
 }
 
@@ -22,7 +22,7 @@ const InvoicesTable: React.FC = () => {
     const [invoices, setInvoices] = useState<InvoiceData[]>([]);
     const [filteredInvoices, setFilteredInvoices] = useState<InvoiceData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedYear, setSelectedYear] = useState<string>(""); // state สำหรับปีที่เลือก
+    const [selectedYear, setSelectedYear] = useState<string>(""); // State for selected year
     const firestore = getFirestore();
 
     useEffect(() => {
@@ -31,11 +31,39 @@ const InvoicesTable: React.FC = () => {
             try {
                 const invoicesCollection = collection(firestore, 'invoices');
                 const invoicesSnapshot = await getDocs(invoicesCollection);
-                const invoicesList = invoicesSnapshot.docs.map(doc => doc.data() as InvoiceData);
+                const invoicesList = invoicesSnapshot.docs.map(doc => {
+                    const data = doc.data() as {
+                        userId: string;
+                        room: string; // Ensure room is included in the fetched data
+                        month: string;
+                        year: string;
+                        rent: number; // Ensure these are numbers
+                        water: number; 
+                        electricity: number; 
+                        fine: number; 
+                        total: number; 
+                        roomStatus: string;
+                    };
+
+                    return {
+                        id: doc.id,
+                        userId: data.userId || "",
+                        room: data.room || "", // Room number pulled from Firestore
+                        month: data.month || "",
+                        year: data.year || "",
+                        rent: data.rent || 0, // Default to 0 if undefined
+                        water: data.water || 0,
+                        electricity: data.electricity || 0,
+                        fine: data.fine || 0,
+                        total: data.total || 0,
+                        roomStatus: data.roomStatus || "",
+                    } as InvoiceData;
+                });
+
                 setInvoices(invoicesList);
-                setFilteredInvoices(invoicesList); // เริ่มต้นด้วยข้อมูลทั้งหมด
+                setFilteredInvoices(invoicesList);
             } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการดึงข้อมูลใบแจ้งหนี้: ", error);
+                console.error("Error fetching invoices: ", error);
             } finally {
                 setLoading(false);
             }
@@ -44,69 +72,68 @@ const InvoicesTable: React.FC = () => {
         fetchInvoices();
     }, [firestore]);
 
-    // ฟังก์ชันจัดการการเลือกปี
     const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedYear = e.target.value;
         setSelectedYear(selectedYear);
 
         if (selectedYear) {
             const filtered = invoices.filter(invoice => {
-                const buddhistYear = parseInt(invoice.year) + 543; // แปลงเป็นปีพุทธศักราช
-                return buddhistYear.toString() === selectedYear; // กรองข้อมูลตามปีที่เลือก
+                const buddhistYear = parseInt(invoice.year) + 543; // Convert to Buddhist year
+                return buddhistYear.toString() === selectedYear; // Filter invoices by selected year
             });
-            setFilteredInvoices(filtered); // กรองข้อมูลตามปีที่เลือก
+            setFilteredInvoices(filtered);
         } else {
-            setFilteredInvoices(invoices); // ถ้าไม่เลือกปีใด ให้แสดงข้อมูลทั้งหมด
+            setFilteredInvoices(invoices); // Show all if no year is selected
         }
     };
 
     const columns = [
         {
-            title: 'ห้อง',
+            title: 'ห้อง', // Room
             dataIndex: 'room',
             key: 'room',
         },
         {
-            title: 'เดือน',
+            title: 'เดือน', // Month
             dataIndex: 'month',
             key: 'month',
         },
         {
-            title: 'ปี (พ.ศ.)',
+            title: 'ปี (พ.ศ.)', // Year (Buddhist)
             dataIndex: 'year',
             key: 'year',
             render: (year: string) => {
-                const buddhistYear = parseInt(year) + 543; // แปลงเป็นปีพุทธศักราช
+                const buddhistYear = parseInt(year) + 543; // Convert to Buddhist year
                 return buddhistYear.toString();
             },
         },
         {
-            title: 'ค่าเช่า',
+            title: 'ค่าเช่า', // Rent
             dataIndex: 'rent',
             key: 'rent',
         },
         {
-            title: 'ค่าน้ำ',
+            title: 'ค่าน้ำ', // Water
             dataIndex: 'water',
             key: 'water',
         },
         {
-            title: 'ค่าไฟ',
+            title: 'ค่าไฟ', // Electricity
             dataIndex: 'electricity',
             key: 'electricity',
         },
         {
-            title: 'ค่าปรับ',
+            title: 'ค่าปรับ', // Fine
             dataIndex: 'fine',
             key: 'fine',
         },
         {
-            title: 'รวมทั้งหมด',
+            title: 'รวมทั้งหมด', // Total
             dataIndex: 'total',
             key: 'total',
         },
         {
-            title: 'สถานะการชำระเงิน',
+            title: 'สถานะการชำระเงิน', // Payment Status
             dataIndex: 'roomStatus',
             key: 'roomStatus',
         },
@@ -118,7 +145,7 @@ const InvoicesTable: React.FC = () => {
             <div className="invoices-table-container">
                 <h3>ใบแจ้งหนี้</h3>
 
-                {/* ส่วนเลือกปี */}
+                {/* Year selection */}
                 <div className="filter-container">
                     <label htmlFor="year-select">เลือกปี:</label>
                     <select
@@ -135,14 +162,14 @@ const InvoicesTable: React.FC = () => {
                     </select>
                 </div>
 
-                {/* ตารางแสดงใบแจ้งหนี้ */}
+                {/* Invoices table */}
                 {loading ? (
                     <Spin size="large" />
                 ) : (
                     <Table
                         dataSource={filteredInvoices}
                         columns={columns}
-                        rowKey="userId"
+                        rowKey="userId" // This can be updated to a unique field if necessary
                         pagination={{ pageSize: 10 }}
                     />
                 )}

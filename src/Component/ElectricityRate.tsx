@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebaseConfig"; // Adjust the import path based on your project structure
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./ElectricityRate.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -27,13 +26,12 @@ const getPreviousMonth = (currentMonth: string): string => {
         "พฤศจิกายน", "ธันวาคม"
     ];
     const currentMonthIndex = months.indexOf(currentMonth);
-    return currentMonthIndex > 0 
-        ? months[currentMonthIndex - 1] 
+    return currentMonthIndex > 0
+        ? months[currentMonthIndex - 1]
         : months[months.length - 1]; // Wrap around to December if it's January
 };
 
 const ElectricityRate: React.FC = () => {
-    const navigate = useNavigate(); // Create navigate function
     const [selectedMonth, setSelectedMonth] = useState("มกราคม");
     const [selectedYear, setSelectedYear] = useState("2567");
     const [electricityData, setElectricityData] = useState<ElectricityDataState>({});
@@ -57,13 +55,20 @@ const ElectricityRate: React.FC = () => {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                // Retrieve data from Firestore
                 const fetchedData = docSnap.data() as ElectricityDataState;
-
-                // Merge fetched data with existing data
-                setElectricityData(prevData => ({ ...prevData, ...fetchedData }));
+                setElectricityData(prevData => {
+                    const newData = { ...prevData };
+                    for (const room in fetchedData) {
+                        newData[room] = {
+                            previous: fetchedData[room].previous || '0', // Default to '0'
+                            current: fetchedData[room].current || '0',
+                            units: fetchedData[room].units || '0',
+                            amount: fetchedData[room].amount || '0',
+                        };
+                    }
+                    return newData;
+                });
             } else {
-                // If no data exists, set default values for rooms
                 const defaultData = generateDefaultElectricityData();
                 setElectricityData(defaultData);
             }
@@ -72,10 +77,11 @@ const ElectricityRate: React.FC = () => {
         }
     };
 
+
     const generateDefaultElectricityData = (): ElectricityDataState => {
         const roomNumbers = [
-            '201', '202', '203', '204', '205', '206', '207', '208', 
-            '309', '310', '311', '312', '313', '314', '315', '316', 
+            '201', '202', '203', '204', '205', '206', '207', '208',
+            '309', '310', '311', '312', '313', '314', '315', '316',
             '225', '226', '227', '228', '329', '330', '331', '332'
         ]; // Ordered rooms
         return roomNumbers.reduce((acc, room) => {
@@ -121,15 +127,27 @@ const ElectricityRate: React.FC = () => {
     const saveDataToFirestore = async () => {
         const monthYear = `${selectedMonth} ${selectedYear}`;
         try {
-            // Create a structured object to save in Firestore
-            const structuredData = {
-                roomData: electricityData
-            };
-            await setDoc(doc(db, "electricityData", monthYear), structuredData);
-            alert("Data saved successfully!");
+            // Filter out any undefined values and provide default values
+            const filteredData = Object.fromEntries(
+                Object.entries(electricityData).map(([room, data]) => [
+                    room,
+                    {
+                        previous: data.previous || '0', // Default to '0' if undefined
+                        current: data.current || '0',
+                        units: data.units || '0',
+                        amount: data.amount || '0',
+                    }
+                ])
+            );
+
+            // Log the data being saved for debugging
+            console.log("Saving data to Firestore: ", filteredData);
+
+            await setDoc(doc(db, "electricityData", monthYear), filteredData);
+            alert("บันทึกสำเร็จ");
         } catch (error) {
-            console.error("Error saving data: ", error);
-            alert("Failed to save data.");
+            console.error("บันทึกไม่สำเร็จ: ", error);
+            alert("บันทึกไม่สำเร็จ.");
         }
     };
 
@@ -199,7 +217,7 @@ const ElectricityRate: React.FC = () => {
                             value={selectedYear}
                             onChange={handleYearChange}
                         >
-                            {Array.from({ length: 10 }, (_, i) => (2567 + i)).map((year) => (
+                            {Array.from({ length: 6 }, (_, i) => (2567 + i)).map((year) => (
                                 <option key={year} value={year.toString()}>{year}</option>
                             ))}
                         </select>
@@ -225,39 +243,36 @@ const ElectricityRate: React.FC = () => {
                                 '201', '202', '203', '204', '205', '206', '207', '208',
                                 '309', '310', '311', '312', '313', '314', '315', '316',
                                 '225', '226', '227', '228', '329', '330', '331', '332'
-                            ].map(room => (
+                            ].map((room) => (
                                 <tr key={room}>
                                     <td>{room}</td>
                                     <td>
                                         <input
-                                            type="number"
-                                            value={electricityData[room]?.previous}
+                                            type="text"
+                                            value={electricityData[room]?.previous || ''}
                                             onChange={(e) => handleInputChange(room, 'previous', e.target.value)}
-                                            placeholder="เลขก่อนหน้า"
                                         />
                                     </td>
                                     <td>
                                         <input
-                                            type="number"
-                                            value={electricityData[room]?.current}
+                                            type="text"
+                                            value={electricityData[room]?.current || ''}
                                             onChange={(e) => handleInputChange(room, 'current', e.target.value)}
-                                            placeholder="เลขล่าสุด"
                                         />
                                     </td>
-                                    <td>{electricityData[room]?.units}</td>
-                                    <td>{electricityData[room]?.amount}</td>
+                                    <td>{electricityData[room]?.units || ''}</td>
+                                    <td>{electricityData[room]?.amount || ''}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    <h4>รวมจำนวนเงิน: {calculateTotalAmount()} บาท</h4>
-                    <button onClick={saveDataToFirestore} className="btn btn-primary">บันทึกข้อมูล</button>
                 </div>
-                <button onClick={() => navigate("/Showelectricity")} className="btn btn-secondary">
-                    ดูการใช้ไฟฟ้า
-                </button>
-                <Footer />
+                <button onClick={saveDataToFirestore}>บันทึกข้อมูล</button>
+                <div className="total-amount">
+                    <strong>{`จำนวนเงินทั้งหมด: ${calculateTotalAmount()} บาท`}</strong>
+                </div>
             </div>
+            <Footer />
         </>
     );
 };
