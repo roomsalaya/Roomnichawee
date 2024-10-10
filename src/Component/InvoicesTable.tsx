@@ -7,14 +7,14 @@ import './InvoicesTable.css';
 
 interface InvoiceData {
     userId: string;
-    room: string; // This will hold the room number
+    room: string; // เลขห้อง
     month: string;
-    year: string; // This can stay as a string since you're converting it to Buddhist year later
-    rent: number; // Change from string to number
-    water: number; // Change from string to number
-    electricity: number; // Change from string to number
-    fine: number; // Change from string to number
-    total: number; // Change from string to number
+    year: string; // ปีในรูปแบบ string
+    rent: number; 
+    water: number; 
+    electricity: number; 
+    fine: number; 
+    total: number; 
     roomStatus: string;
 }
 
@@ -22,7 +22,7 @@ const InvoicesTable: React.FC = () => {
     const [invoices, setInvoices] = useState<InvoiceData[]>([]);
     const [filteredInvoices, setFilteredInvoices] = useState<InvoiceData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedYear, setSelectedYear] = useState<string>(""); // State for selected year
+    const [selectedYear, setSelectedYear] = useState<string>(""); // State สำหรับปีที่เลือก
     const firestore = getFirestore();
 
     useEffect(() => {
@@ -34,10 +34,10 @@ const InvoicesTable: React.FC = () => {
                 const invoicesList = invoicesSnapshot.docs.map(doc => {
                     const data = doc.data() as {
                         userId: string;
-                        room: string; // Ensure room is included in the fetched data
+                        room: string; // ฟิลด์เลขห้อง
                         month: string;
                         year: string;
-                        rent: number; // Ensure these are numbers
+                        rent: number; 
                         water: number; 
                         electricity: number; 
                         fine: number; 
@@ -48,10 +48,10 @@ const InvoicesTable: React.FC = () => {
                     return {
                         id: doc.id,
                         userId: data.userId || "",
-                        room: data.room || "", // Room number pulled from Firestore
+                        room: data.room || "", // เลขห้องที่ถูกดึงมา
                         month: data.month || "",
                         year: data.year || "",
-                        rent: data.rent || 0, // Default to 0 if undefined
+                        rent: data.rent || 0,
                         water: data.water || 0,
                         electricity: data.electricity || 0,
                         fine: data.fine || 0,
@@ -78,62 +78,62 @@ const InvoicesTable: React.FC = () => {
 
         if (selectedYear) {
             const filtered = invoices.filter(invoice => {
-                const buddhistYear = parseInt(invoice.year) + 543; // Convert to Buddhist year
-                return buddhistYear.toString() === selectedYear; // Filter invoices by selected year
+                const buddhistYear = parseInt(invoice.year) + 543; // แปลงเป็นปีพุทธศักราช
+                return buddhistYear.toString() === selectedYear; // กรองข้อมูลตามปีที่เลือก
             });
             setFilteredInvoices(filtered);
         } else {
-            setFilteredInvoices(invoices); // Show all if no year is selected
+            setFilteredInvoices(invoices); // แสดงทั้งหมดถ้าไม่มีการเลือกปี
         }
     };
 
     const columns = [
         {
-            title: 'ห้อง', // Room
-            dataIndex: 'room',
+            title: 'ห้อง',
+            dataIndex: 'room', // ตรวจสอบให้แน่ใจว่าชื่อฟิลด์ถูกต้อง
             key: 'room',
         },
         {
-            title: 'เดือน', // Month
+            title: 'เดือน',
             dataIndex: 'month',
             key: 'month',
         },
         {
-            title: 'ปี (พ.ศ.)', // Year (Buddhist)
+            title: 'ปี (พ.ศ.)',
             dataIndex: 'year',
             key: 'year',
             render: (year: string) => {
-                const buddhistYear = parseInt(year) + 543; // Convert to Buddhist year
+                const buddhistYear = parseInt(year) + 543; // แปลงเป็นปีพุทธศักราช
                 return buddhistYear.toString();
             },
         },
         {
-            title: 'ค่าเช่า', // Rent
+            title: 'ค่าเช่า',
             dataIndex: 'rent',
             key: 'rent',
         },
         {
-            title: 'ค่าน้ำ', // Water
+            title: 'ค่าน้ำ',
             dataIndex: 'water',
             key: 'water',
         },
         {
-            title: 'ค่าไฟ', // Electricity
+            title: 'ค่าไฟ',
             dataIndex: 'electricity',
             key: 'electricity',
         },
         {
-            title: 'ค่าปรับ', // Fine
+            title: 'ค่าปรับ',
             dataIndex: 'fine',
             key: 'fine',
         },
         {
-            title: 'รวมทั้งหมด', // Total
+            title: 'รวมทั้งหมด',
             dataIndex: 'total',
             key: 'total',
         },
         {
-            title: 'สถานะการชำระเงิน', // Payment Status
+            title: 'สถานะการชำระเงิน',
             dataIndex: 'roomStatus',
             key: 'roomStatus',
         },
@@ -169,7 +169,7 @@ const InvoicesTable: React.FC = () => {
                     <Table
                         dataSource={filteredInvoices}
                         columns={columns}
-                        rowKey="userId" // This can be updated to a unique field if necessary
+                        rowKey="userId"
                         pagination={{ pageSize: 10 }}
                     />
                 )}
