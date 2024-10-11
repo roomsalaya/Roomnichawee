@@ -1,3 +1,4 @@
+// In App.tsx
 import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -18,8 +19,10 @@ const ShowElectricity = lazy(() => import('./Component/Showelectricity'));
 const InvoiceForm = lazy(() => import('./Component/InvoiceForm'));
 const SentInvoicesPage = lazy(() => import('./Component/SentInvoicesPage'));
 const AdminInvoicesPage = lazy(() => import('./Component/AdminInvoicesPage'));
+const PaymentPage = lazy(() => import('./Component/PaymentPage'));
 
 const App: React.FC = () => {
+
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
@@ -40,6 +43,7 @@ const App: React.FC = () => {
           <Route path="/InvoiceForm" element={<InvoiceForm />} />
           <Route path="/SentInvoicesPage" element={<SentInvoicesPage />} />
           <Route path='/AdminInvoicesPage' element={<AdminInvoicesPage/>} />
+          <Route path='/PaymentPage' element={<PaymentPage/>} />
         </Routes>
       </Suspense>
     </Router>

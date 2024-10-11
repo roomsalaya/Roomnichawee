@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data() as { role: 'admin' | 'user'; userImage?: string };
                     setRole(userData.role || null);
-                    
+
                     let notificationsQuery;
                     if (userData.role === 'admin') {
                         notificationsQuery = query(collection(db, 'notifications'));
@@ -150,7 +150,8 @@ const Navbar: React.FC = () => {
         role === 'admin' && {
             key: 'AdminInvoicesPage',
             icon: <FileDoneOutlined />,
-            label: <Link to="/AdminInvoicesPage" className="menu-label">AdminInvoicesPage</Link>,
+            label: <Link to="/AdminInvoicesPage" className="menu-label">แก้ไขบิลแจ้งหนี้
+            </Link>,
         },
         role === 'user' && {
             key: 'profile',
@@ -161,6 +162,16 @@ const Navbar: React.FC = () => {
             key: 'SentInvoicesPage',
             icon: <FileDoneOutlined />,
             label: <Link to="/SentInvoicesPage" className="menu-label">บิลแจ้งหนี้</Link>,
+        },
+        role === 'user' && {
+            key: 'PaymentPage',
+            icon: <FileDoneOutlined />,
+            label: <Link to="/PaymentPage" className="menu-label">PaymentPage</Link>,
+        },
+        role === 'user' && {
+            key: 'InvoiceDetails',
+            icon: <FileDoneOutlined />,
+            label: <Link to="/InvoiceDetails" className="menu-label">InvoiceDetails</Link>,
         },
         role && {
             key: 'logout',
