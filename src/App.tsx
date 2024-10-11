@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import SentInvoicesPage from './Component/SentInvoicesPage';
-import AdminInvoicesPage from './Component/AdminInvoicesPage';
 
 // Lazy load components
 const Home = lazy(() => import('./Component/Home'));
@@ -18,6 +16,8 @@ const MaintenanceListView = lazy(() => import('./Component/MaintenanceListView')
 const ElectricityRate = lazy(() => import('./Component/ElectricityRate'));
 const ShowElectricity = lazy(() => import('./Component/Showelectricity'));
 const InvoiceForm = lazy(() => import('./Component/InvoiceForm'));
+const SentInvoicesPage = lazy(() => import('./Component/SentInvoicesPage'));
+const AdminInvoicesPage = lazy(() => import('./Component/AdminInvoicesPage'));
 
 const App: React.FC = () => {
   return (
