@@ -1,0 +1,79 @@
+.sent-invoices-container {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+}
+
+.sent-invoices-container h3 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.ant-spin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.ant-table {
+    border-radius: 10px;
+    overflow: hidden;
+    
+}
+
+.ant-table-thead > tr > th {
+    background-color: #fafafa;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    font-family: 'Anuphan', sans-serif;
+}
+
+.ant-table-tbody > tr > td {
+    text-align: center;
+    font-size: 15px;
+    font-family: 'Anuphan', sans-serif;
+    color: #666;
+}
+
+.ant-table-pagination {
+    text-align: right;
+    margin: 16px 0;
+}
+
+.ant-pagination-item-active {
+    border-color: #1890ff;
+}
+
+.ant-pagination-item-active a {
+    color: #1890ff;
+}
+
+.ant-pagination-item a {
+    color: #333;
+}
+
+.ant-pagination-item:hover a {
+    color: #1890ff;
+}
+
+.ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-item-link {
+    border-radius: 50%;
+}
+
+p {
+    font-size: 18px;
+    color: #888;
+    text-align: center;
+    margin-top: 20px;
+}

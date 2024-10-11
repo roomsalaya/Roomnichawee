@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import InvoicesTableAdmin from './Component/InvoicesTableAdmin';
+import SentInvoicesPage from './Component/SentInvoicesPage';
+import AdminInvoicesPage from './Component/AdminInvoicesPage';
 
 // Lazy load components
 const Home = lazy(() => import('./Component/Home'));
@@ -17,7 +18,6 @@ const MaintenanceListView = lazy(() => import('./Component/MaintenanceListView')
 const ElectricityRate = lazy(() => import('./Component/ElectricityRate'));
 const ShowElectricity = lazy(() => import('./Component/Showelectricity'));
 const InvoiceForm = lazy(() => import('./Component/InvoiceForm'));
-const InvoicesTable = lazy(() => import('./Component/InvoicesTable'));
 
 const App: React.FC = () => {
   return (
@@ -38,8 +38,8 @@ const App: React.FC = () => {
           <Route path="/ElectricityRate" element={<ElectricityRate />} />
           <Route path="/Showelectricity" element={<ShowElectricity />} />
           <Route path="/InvoiceForm" element={<InvoiceForm />} />
-          <Route path="/InvoicesTable" element={<InvoicesTable />} />
-          <Route path="/InvoicesTableAdmin" element={<InvoicesTableAdmin />} />
+          <Route path="/SentInvoicesPage" element={<SentInvoicesPage />} />
+          <Route path='/AdminInvoicesPage' element={<AdminInvoicesPage/>} />
         </Routes>
       </Suspense>
     </Router>

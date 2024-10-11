@@ -148,9 +148,9 @@ const Navbar: React.FC = () => {
             label: <Link to="/InvoiceForm" className="menu-label">ใบแจ้งหนี้</Link>,
         },
         role === 'admin' && {
-            key: 'InvoicesTableAdmin',
+            key: 'AdminInvoicesPage',
             icon: <FileDoneOutlined />,
-            label: <Link to="/InvoicesTableAdmin" className="menu-label">InvoicesTableAdmin</Link>,
+            label: <Link to="/AdminInvoicesPage" className="menu-label">AdminInvoicesPage</Link>,
         },
         role === 'user' && {
             key: 'profile',
@@ -158,9 +158,9 @@ const Navbar: React.FC = () => {
             label: <Link to="/profile" className="menu-label">โปรไฟล์</Link>,
         },
         role === 'user' && {
-            key: 'SentInvoiceForm',
-            icon: <UserOutlined />,
-            label: <Link to="/InvoicesTable" className="menu-label">InvoicesTable</Link>,
+            key: 'SentInvoicesPage',
+            icon: <FileDoneOutlined />,
+            label: <Link to="/SentInvoicesPage" className="menu-label">บิลแจ้งหนี้</Link>,
         },
         role && {
             key: 'logout',
