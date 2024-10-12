@@ -4,6 +4,7 @@ import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/fire
 import { Row, Col, Card, Button, Spin, message, Modal } from 'antd'; // นำเข้า Modal จาก Ant Design
 import Navbar from './Navbar';
 import Footer from './Footer';
+import './AdminUser.css';
 
 // กำหนดประเภทของผู้ใช้พร้อมสถานะห้อง
 interface User {

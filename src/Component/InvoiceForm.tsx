@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Card, Spin, Switch, message } from 'antd';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import for storage
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './InvoiceForm.css';
@@ -25,9 +25,16 @@ const InvoiceForm: React.FC = () => {
     const [form] = Form.useForm();
     const [electricityData, setElectricityData] = useState<ElectricityData>({});
     const [totalAmount, setTotalAmount] = useState<number>(0);
-    const [pdfFile, setPdfFile] = useState<File | null>(null); // State for PDF file
+    const [pdfFile, setPdfFile] = useState<File | null>(null);
     const firestore = getFirestore();
-    const storage = getStorage(); // Initialize Firebase storage
+    const storage = getStorage();
+
+    // Define the order for room numbers
+    const roomOrder = [
+        '201', '202', '203', '204', '205', '206', '207', '208',
+        '309', '310', '311', '312', '313', '314', '315', '316',
+        '225', '226', '227', '228', '329', '330', '331', '332'
+    ];
 
     // Fetch users data
     useEffect(() => {
@@ -72,9 +79,7 @@ const InvoiceForm: React.FC = () => {
     }, [selectedMonth, selectedYear, firestore]);
 
     const initializeDefaultElectricityData = () => {
-        const roomNumbers = ['201', '202', '203', '204', '205', '206', '207', '208',
-            '309', '310', '311', '312', '313', '314', '315', '316',
-            '225', '226', '227', '228', '329', '330', '331', '332'];
+        const roomNumbers = roomOrder; // Use defined order for room numbers
         return roomNumbers.reduce((acc, room) => {
             acc[room] = { previous: '0', current: '0', units: '0', amount: '0' };
             return acc;
@@ -93,7 +98,7 @@ const InvoiceForm: React.FC = () => {
         setIsModalVisible(false);
         form.resetFields();
         setTotalAmount(0);
-        setPdfFile(null); // Reset PDF file
+        setPdfFile(null);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +106,7 @@ const InvoiceForm: React.FC = () => {
         if (file && file.type === 'application/pdf') {
             setPdfFile(file);
         } else {
-            message.error('กรุณาเลือกไฟล์ PDF เท่านั้น'); // Show error if not a PDF
+            message.error('กรุณาเลือกไฟล์ PDF เท่านั้น');
         }
     };
 
@@ -109,10 +114,9 @@ const InvoiceForm: React.FC = () => {
         try {
             let pdfUrl = '';
             if (pdfFile) {
-                // Upload the PDF file to Firebase Storage
                 const pdfRef = ref(storage, `invoices/${pdfFile.name}`);
                 await uploadBytes(pdfRef, pdfFile);
-                pdfUrl = await getDownloadURL(pdfRef); // Get the download URL
+                pdfUrl = await getDownloadURL(pdfRef);
             }
 
             const invoiceData = {
@@ -126,10 +130,9 @@ const InvoiceForm: React.FC = () => {
                 fine: form.getFieldValue('fine'),
                 total: totalAmount,
                 roomStatus: form.getFieldValue('roomStatus') ? 'จ่ายแล้ว' : 'ค้างชำระ',
-                pdfUrl, // Include PDF URL in invoice data
+                pdfUrl,
             };
 
-            // Save the invoice data to Firestore
             const invoiceRef = doc(collection(firestore, "invoices"));
             await setDoc(invoiceRef, invoiceData);
             
@@ -137,12 +140,12 @@ const InvoiceForm: React.FC = () => {
             setIsModalVisible(false);
             form.resetFields();
             setTotalAmount(0);
-            setPdfFile(null); // Reset PDF file after submission
+            setPdfFile(null);
         } catch (error) {
             console.error("Error saving invoice data: ", error);
             message.error("เกิดข้อผิดพลาดในการส่งบิลแจ้งหนี้");
         }
-    };    
+    };
 
     const showModal = (user: any) => {
         setSelectedUser(user);
@@ -171,7 +174,14 @@ const InvoiceForm: React.FC = () => {
 
     const handleFieldChange = (_changedValues: any, allValues: any) => {
         calculateTotal(allValues.rent, allValues.water, electricityData[selectedUser?.room]?.amount, allValues.fine);
-    };    
+    };
+
+    // Sort usersData based on roomOrder
+    const sortedUsersData = usersData.sort((a, b) => {
+        const indexA = roomOrder.indexOf(a.room);
+        const indexB = roomOrder.indexOf(b.room);
+        return indexA - indexB;
+    });
 
     return (
         <>
@@ -203,7 +213,7 @@ const InvoiceForm: React.FC = () => {
                     <Spin size="large" />
                 ) : (
                     <div className="cards-container">
-                        {usersData.map(user => (
+                        {sortedUsersData.map(user => (
                             <Card
                                 key={user.id}
                                 title={`ห้อง: ${user.room || 'ไม่ระบุ'}`}
@@ -211,54 +221,48 @@ const InvoiceForm: React.FC = () => {
                                 style={{ width: 300, marginTop: 16, cursor: 'pointer' }}
                                 onClick={() => showModal(user)}
                             >
-                                <p>ชื่อ: {user.name}</p>
                                 <p>ค่าเช่า: {user.rent}</p>
+                                <p>ค่าน้ำ: {user.water}</p>
+                                <p>สถานะห้อง: {user.roomStatus}</p>
                             </Card>
                         ))}
                     </div>
                 )}
-            </div>
 
-            <Modal
-                title={`สร้างบิลสำหรับ ${selectedUser?.name}`}
-                visible={isModalVisible}
-                onCancel={handleCancel}
-                footer={[
-                    <button key="back" onClick={handleCancel}>
-                        ยกเลิก
-                    </button>,
-                    <button key="submit" onClick={handleUpdate}>
-                        ส่งบิล
-                    </button>
-                ]}
-            >
-                <Form form={form} onValuesChange={handleFieldChange}>
-                    <Form.Item name="room" label="ห้อง">
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item name="rent" label="ค่าเช่า" rules={[{ required: true, message: 'กรุณากรอกค่าเช่า' }]}>
-                        <Input type="number" />
-                    </Form.Item>
-                    <Form.Item name="water" label="ค่าน้ำ" rules={[{ required: true, message: 'กรุณากรอกค่าน้ำ' }]}>
-                        <Input type="number" />
-                    </Form.Item>
-                    <Form.Item name="electricity" label="ค่าไฟ" rules={[{ required: true, message: 'กรุณากรอกค่าไฟ' }]}>
-                        <Input disabled value={electricityData[selectedUser?.room]?.amount || 'ไม่ระบุ'} />
-                    </Form.Item>
-                    <Form.Item name="fine" label="ค่าปรับ">
-                        <Input type="number" />
-                    </Form.Item>
-                    <Form.Item name="total" label="รวมทั้งหมด">
-                        <Input disabled value={totalAmount.toFixed(2)} />
-                    </Form.Item>
-                    <Form.Item name="roomStatus" label="สถานะการชำระเงิน" valuePropName="checked">
-                        <Switch checkedChildren="จ่ายแล้ว" unCheckedChildren="ค้างชำระ"/>
-                    </Form.Item>
-                    <Form.Item label="แนบไฟล์ PDF">
-                        <Input type="file" accept="application/pdf" onChange={handleFileChange} />
-                    </Form.Item>
-                </Form>
-            </Modal>
+                <Modal
+                    title={`ออกใบแจ้งหนี้ห้อง ${selectedUser?.room || 'ไม่ระบุ'}`}
+                    visible={isModalVisible}
+                    onCancel={handleCancel}
+                    onOk={handleUpdate}
+                >
+                    <Form form={form} onValuesChange={handleFieldChange}>
+                        <Form.Item name="room" label="ห้อง">
+                            <Input disabled />
+                        </Form.Item>
+                        <Form.Item name="rent" label="ค่าเช่า" rules={[{ required: true, message: 'กรุณากรอกค่าเช่า' }]}>
+                            <Input type="number" />
+                        </Form.Item>
+                        <Form.Item name="water" label="ค่าน้ำ" rules={[{ required: true, message: 'กรุณากรอกค่าน้ำ' }]}>
+                            <Input type="number" />
+                        </Form.Item>
+                        <Form.Item name="electricity" label="ค่าไฟ">
+                            <Input value={electricityData[selectedUser?.room]?.amount || 'ไม่ระบุ'} disabled />
+                        </Form.Item>
+                        <Form.Item name="fine" label="ค่าปรับ">
+                            <Input type="number" />
+                        </Form.Item>
+                        <Form.Item name="roomStatus" label="สถานะห้อง">
+                            <Switch defaultChecked={false} />
+                        </Form.Item>
+                        <Form.Item name="total" label="รวม" >
+                            <Input disabled />
+                        </Form.Item>
+                        <Form.Item label="ไฟล์ PDF">
+                            <input type="file" accept="application/pdf" onChange={handleFileChange} />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </div>
             <Footer />
         </>
     );
