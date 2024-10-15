@@ -135,7 +135,7 @@ const InvoiceForm: React.FC = () => {
 
             const invoiceRef = doc(collection(firestore, "invoices"));
             await setDoc(invoiceRef, invoiceData);
-            
+
             message.success("บิลแจ้งหนี้ถูกส่งเรียบร้อยแล้ว!");
             setIsModalVisible(false);
             form.resetFields();
@@ -223,7 +223,6 @@ const InvoiceForm: React.FC = () => {
                             >
                                 <p>ค่าเช่า: {user.rent}</p>
                                 <p>ค่าน้ำ: {user.water}</p>
-                                <p>สถานะห้อง: {user.roomStatus}</p>
                             </Card>
                         ))}
                     </div>
@@ -234,6 +233,7 @@ const InvoiceForm: React.FC = () => {
                     visible={isModalVisible}
                     onCancel={handleCancel}
                     onOk={handleUpdate}
+                    okText="ส่งบิล" // Change the text here
                 >
                     <Form form={form} onValuesChange={handleFieldChange}>
                         <Form.Item name="room" label="ห้อง">

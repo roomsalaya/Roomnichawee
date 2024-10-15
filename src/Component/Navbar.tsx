@@ -171,7 +171,7 @@ const Navbar: React.FC = () => {
         role === 'user' && {
             key: 'InvoiceDetails',
             icon: <FileDoneOutlined />,
-            label: <Link to="/InvoiceDetails" className="menu-label">InvoiceDetails</Link>,
+            label: <Link to="/PaymentHistoryPage" className="menu-label">ประวัติการชำระเงิน</Link>,
         },
         role && {
             key: 'logout',

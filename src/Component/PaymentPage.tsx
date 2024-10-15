@@ -3,7 +3,6 @@ import { Card, Space, Button, Upload, message, Select, Spin, Tooltip } from 'ant
 import { CopyOutlined, UploadOutlined } from '@ant-design/icons';
 import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore'; // Add addDoc import
 import { getAuth } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './PaymentPage.css';
@@ -32,7 +31,6 @@ const PaymentPage: React.FC = () => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const firestore = getFirestore();
     const auth = getAuth();
-    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -118,16 +116,11 @@ const PaymentPage: React.FC = () => {
         }
     };
 
-    // Navigate to PaymentHistoryPage
-    const goToPaymentHistoryPage = () => {
-        navigate('/PaymentHistoryPage'); // Replace with your actual route for PaymentHistoryPage
-    };
-
     return (
         <>
             <Navbar />
             <div className="payment-container">
-                <h3>ชำระเงิน</h3>
+                <h3>ส่งหลักฐานการโอน</h3>
                 <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                     <Card className='payment-card' title="บัญชีสำหรับชำระหนี้">
                         <p className='scb'>
@@ -198,14 +191,6 @@ const PaymentPage: React.FC = () => {
                                             </Button>
                                         </>
                                     )}
-                                    {/* Add Button to Payment History */}
-                                    <Button
-                                        type="default"
-                                        style={{ marginTop: 20 }}
-                                        onClick={goToPaymentHistoryPage}
-                                    >
-                                        ประวัติการชำระเงิน
-                                    </Button>
                                 </>
                             ) : (
                                 <p>ไม่มีบิลสำหรับห้องนี้</p>

@@ -14,7 +14,7 @@ interface User {
     email: string;
     phone: string;
     rental: string;
-    Rent: number;
+    rent: number;
     water: number;
     electricity: number;
     roomStatus: 'available' | 'occupied';
@@ -205,8 +205,8 @@ const AdminUser: React.FC = () => {
                                 <input
                                     type="number"
                                     className="input-field" // Added class
-                                    value={updatedUser?.Rent || ''}
-                                    onChange={(e) => handleInputChange(e, 'Rent')}
+                                    value={updatedUser?.rent || ''}
+                                    onChange={(e) => handleInputChange(e, 'rent')}
                                 />
                             </label>
                             <label>
