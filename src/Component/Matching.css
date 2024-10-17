@@ -1,0 +1,52 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Adjust number of columns as needed */
+    gap: 10px; /* Space between items */
+}
+
+.item {
+    width: 70px; /* Set a fixed size for the item */
+    height: 100px; /* Adjust height as needed */
+    border: 2px solid #ccc; /* Optional: add a border for visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.item-img {
+    max-width: 100%; /* Ensure the image fits within the item */
+    max-height: 100%; /* Prevent the image from exceeding the item's height */
+    object-fit: cover; /* Maintain aspect ratio and cover the area */
+}
+
+.item-placeholder {
+    width: 100%; /* Placeholder to fill the item */
+    height: 100%; /* Match item size */
+    background-color: #f0f0f0; /* Optional: color for the placeholder */
+}
+
+.life-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.game-over, .game-win {
+    font-size: 24px;
+    color: red; /* Use different colors for win/lose messages */
+    margin-top: 20px;
+}

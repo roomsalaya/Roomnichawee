@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
 import {
     LoginOutlined, UserOutlined, DashboardOutlined,
-    HomeOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
+    StarOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
     ToolOutlined, BulbOutlined, FileDoneOutlined, HeartTwoTone,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
-                navigate('/login');
+                navigate('/');
             })
             .catch((error: Error) => {
                 console.error('เกิดข้อผิดพลาดในการออกจากระบบ: ', error);
@@ -126,11 +126,6 @@ const Navbar: React.FC = () => {
     const unreadNotifications = notifications.filter(notification => !notification.read);
 
     const menuItems = [
-        {
-            key: 'home',
-            icon: <HomeOutlined />,
-            label: <Link to="/" className="menu-label">หน้าหลัก</Link>,
-        },
         role === 'admin' && {
             key: 'dashboard',
             icon: <DashboardOutlined />,
@@ -141,16 +136,16 @@ const Navbar: React.FC = () => {
             icon: <FileSyncOutlined />,
             label: <Link to="/adminusers" className="menu-label">แก้ไขข้อมูลผู้เช่า</Link>,
         },
-        role === 'admin' && {
-            key: 'parcel',
-            icon: <InboxOutlined />,
-            label: <Link to="/parcel" className="menu-label">เพิ่มพัสดุ</Link>,
-        },
-        role === 'admin' && {
-            key: 'maintenanceHistory',
-            icon: <ToolOutlined />,
-            label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
-        },
+        //role === 'admin' && {
+            //key: 'parcel',
+            //icon: <InboxOutlined />,
+            //label: <Link to="/parcel" className="menu-label">เพิ่มพัสดุ</Link>,
+       //},
+        //role === 'admin' && {
+           // key: 'maintenanceHistory',
+            //icon: <ToolOutlined />,
+            //label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
+       // },
         role === 'admin' && {
             key: 'ElectricityRate',
             icon: <BulbOutlined />,
@@ -190,6 +185,11 @@ const Navbar: React.FC = () => {
             key: 'InvoiceDetails',
             icon: <FileDoneOutlined />,
             label: <Link to="/PaymentHistoryPage" className="menu-label">ประวัติการชำระเงิน</Link>,
+        },
+        {
+            key: 'home',
+            icon: <StarOutlined />,
+            label: <Link to="/home" className="menu-label">เกมจับคู่</Link>,
         },
         role && {
             key: 'logout',

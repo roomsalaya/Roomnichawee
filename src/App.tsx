@@ -4,8 +4,8 @@ import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 
 // Lazy load components
-const Home = lazy(() => import('./Component/Home'));
 const Login = lazy(() => import('./Component/Login'));
+const Home = lazy(() => import('./Component/Home'));
 const Profile = lazy(() => import('./Component/Profile'));
 const Parcel = lazy(() => import('./Component/Parcel'));
 const AdminDashboard = lazy(() => import('./Component/AdminDashboard'));
@@ -29,8 +29,8 @@ const App: React.FC = () => {
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/parcel" element={<Parcel />} />
           <Route path="/adminparcelpage" element={<AdminParcelPage />} />
