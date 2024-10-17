@@ -2,7 +2,6 @@
 import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import PaymentHistoryPage from './Component/PaymentHistoryPage';
 
 // Lazy load components
 const Home = lazy(() => import('./Component/Home'));
@@ -21,6 +20,8 @@ const InvoiceForm = lazy(() => import('./Component/InvoiceForm'));
 const SentInvoicesPage = lazy(() => import('./Component/SentInvoicesPage'));
 const AdminInvoicesPage = lazy(() => import('./Component/AdminInvoicesPage'));
 const PaymentPage = lazy(() => import('./Component/PaymentPage'));
+const PaymentHistoryPage = lazy(() => import('./Component/PaymentHistoryPage'));
+const AdminPaymentStatusPage = lazy(() => import('./Component/AdminPaymentStatusPage'));
 
 const App: React.FC = () => {
 
@@ -46,6 +47,7 @@ const App: React.FC = () => {
           <Route path='/AdminInvoicesPage' element={<AdminInvoicesPage/>} />
           <Route path='/PaymentPage' element={<PaymentPage/>} />
           <Route path='/PaymentHistoryPage' element={<PaymentHistoryPage/>} />
+          <Route path='/AdminPaymentStatusPage' element={<AdminPaymentStatusPage/>} />
         </Routes>
       </Suspense>
     </Router>

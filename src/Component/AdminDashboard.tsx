@@ -74,7 +74,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 ) : (
                     <Row gutter={[16, 16]}>
-                        <Col xs={24} md={12}>
+                        <Col span={24}>
                             <Card title="จำนวนห้อง">
                                 <Progress
                                     percent={userPercentage}
@@ -84,7 +84,7 @@ const AdminDashboard: React.FC = () => {
                             </Card>
                         </Col>
 
-                        <Col xs={24} md={12}>
+                        <Col span={24}>
                             <Card title="สถานะห้อง">
                                 <ResponsiveContainer width="100%" height={300}>
                                     <PieChart>
@@ -110,7 +110,7 @@ const AdminDashboard: React.FC = () => {
                     </Row>
                 )}
             </div>
-            <Footer/>
+            <Footer />
         </>
     );
 };

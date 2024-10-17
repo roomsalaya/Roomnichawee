@@ -119,6 +119,7 @@ const InvoiceForm: React.FC = () => {
                 pdfUrl = await getDownloadURL(pdfRef);
             }
 
+            // Prepare invoice data
             const invoiceData = {
                 userId: selectedUser.id,
                 room: selectedUser.room || 'ไม่ระบุ',
@@ -133,17 +134,30 @@ const InvoiceForm: React.FC = () => {
                 pdfUrl,
             };
 
+            // Save the invoice to Firestore
             const invoiceRef = doc(collection(firestore, "invoices"));
             await setDoc(invoiceRef, invoiceData);
 
-            message.success("บิลแจ้งหนี้ถูกส่งเรียบร้อยแล้ว!");
+            // Send notification to the user
+            const notificationData = {
+                userId: selectedUser.id, // Link notification to the specific user
+                message: `ใบแจ้งหนี้ห้อง ${selectedUser.room} ประจำเดือน ${selectedMonth} ${selectedYear}`,
+                timestamp: new Date(),
+                status: 'unread',
+            };
+
+            // Save notification in Firestore
+            const notificationRef = doc(collection(firestore, "notifications"));
+            await setDoc(notificationRef, notificationData);
+
+            message.success("บิลแจ้งหนี้ถูกส่งและแจ้งเตือนผู้ใช้งานเรียบร้อยแล้ว!");
             setIsModalVisible(false);
             form.resetFields();
             setTotalAmount(0);
             setPdfFile(null);
         } catch (error) {
-            console.error("Error saving invoice data: ", error);
-            message.error("เกิดข้อผิดพลาดในการส่งบิลแจ้งหนี้");
+            console.error("Error saving invoice data or sending notification: ", error);
+            message.error("เกิดข้อผิดพลาดในการส่งบิลแจ้งหนี้หรือการแจ้งเตือน");
         }
     };
 
@@ -252,7 +266,7 @@ const InvoiceForm: React.FC = () => {
                             <Input type="number" />
                         </Form.Item>
                         <Form.Item name="roomStatus" label="สถานะห้อง">
-                            <Switch defaultChecked={false} />
+                            <Switch checkedChildren="จ่ายแล้ว" unCheckedChildren="ค้างชำระ" />
                         </Form.Item>
                         <Form.Item name="total" label="รวม" >
                             <Input disabled />

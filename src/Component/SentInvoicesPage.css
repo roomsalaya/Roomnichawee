@@ -25,7 +25,7 @@
 
 .ant-table {
     border-radius: 10px;
-    overflow: Y;
+    overflow-y: auto;
 }
 
 .ant-table-thead > tr > th {

@@ -153,3 +153,44 @@
     color: #ff7875;
 }
 
+.notification-item {
+    display: flex; /* ใช้ flexbox เพื่อจัดเรียงแนวนอน */
+    align-items: center; /* จัดตำแหน่งให้อยู่กลางแนวตั้ง */
+    padding: 10px; /* เพิ่ม padding รอบ ๆ รายการ */
+    border-bottom: 1px solid #f0f0f0; /* เพิ่มเส้นแบ่งระหว่างรายการ */
+    transition: background-color 0.3s; /* เพิ่มเอฟเฟกต์การเปลี่ยนสีพื้นหลัง */
+    
+}
+
+.notification-item:hover {
+    background-color: #f9f9f9; /* เปลี่ยนสีพื้นหลังเมื่อเลื่อนเมาส์ */
+}
+
+.notification-item.read {
+    opacity: 0.6; /* ลดความชัดเจนสำหรับการแจ้งเตือนที่อ่านแล้ว */
+}
+
+.notification-item.unread {
+    font-weight: bold; /* ทำให้ข้อความหนาขึ้นสำหรับการแจ้งเตือนที่ยังไม่ได้อ่าน */
+}
+
+.user-image {
+    width: 40px; /* ขนาดของรูปโปรไฟล์ */
+    height: 40px; /* ขนาดของรูปโปรไฟล์ */
+    border-radius: 50%; /* ทำให้รูปโปรไฟล์เป็นวงกลม */
+    margin-right: 10px; /* เพิ่มระยะห่างระหว่างรูปโปรไฟล์และข้อความ */
+}
+
+.notification-modal {
+    max-width: 600px; /* กำหนดความกว้างสูงสุดของ modal */
+    margin: 20px auto; /* กำหนด margin ให้เท่ากันทั้งซ้ายและขวา */
+}
+
+.notification-icon {
+    font-size: 24px; /* ขนาดของไอคอนแจ้งเตือน */
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็น pointer เมื่อเลื่อนเมาส์ */
+}
+
+.notification-badge {
+    margin-right: 20px; /* ระยะห่างจากด้านขวา */
+}

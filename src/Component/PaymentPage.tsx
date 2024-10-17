@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Space, Button, Upload, message, Select, Spin, Tooltip } from 'antd';
-import { CopyOutlined, UploadOutlined } from '@ant-design/icons';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore'; // Add addDoc import
+import { CopyOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
+import { getFirestore, collection, getDocs, addDoc, query, where } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './PaymentPage.css';
 
 const { Option } = Select;
 
-// Interface for invoice data
 interface InvoiceData {
     id: string;
     room: string;
@@ -24,13 +24,31 @@ interface InvoiceData {
     pdfUrl?: string;
 }
 
+// Month mapping for sorting
+const monthMap: { [key: string]: number } = {
+    'มกราคม': 1,
+    'กุมภาพันธ์': 2,
+    'มีนาคม': 3,
+    'เมษายน': 4,
+    'พฤษภาคม': 5,
+    'มิถุนายน': 6,
+    'กรกฎาคม': 7,
+    'สิงหาคม': 8,
+    'กันยายน': 9,
+    'ตุลาคม': 10,
+    'พฤศจิกายน': 11,
+    'ธันวาคม': 12,
+};
+
 const PaymentPage: React.FC = () => {
     const [invoices, setInvoices] = useState<InvoiceData[]>([]);
     const [selectedInvoice, setSelectedInvoice] = useState<InvoiceData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const firestore = getFirestore();
     const auth = getAuth();
+    const storage = getStorage();
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -45,7 +63,15 @@ const PaymentPage: React.FC = () => {
                     const invoicesSnapshot = await getDocs(invoicesCollection);
                     const invoicesList = invoicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as InvoiceData[];
 
-                    const filteredInvoices = invoicesList.filter(invoice => invoice.room === room);
+                    // Filter and sort invoices by month using the monthMap
+                    const filteredInvoices = invoicesList
+                        .filter(invoice => invoice.room === room)
+                        .sort((a, b) => {
+                            const monthA = monthMap[a.month];
+                            const monthB = monthMap[b.month];
+                            return monthA - monthB;
+                        });
+
                     setInvoices(filteredInvoices);
                 }
             } catch (error) {
@@ -67,52 +93,82 @@ const PaymentPage: React.FC = () => {
     const handleUpload = (file: File) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-            setUploadedImage(reader.result as string); // Set the uploaded image
+            setUploadedImage(reader.result as string);
         };
-        reader.readAsDataURL(file); // Read the file as a data URL
-        message.success(`${file.name} uploaded successfully.`);
+        reader.readAsDataURL(file);
+        message.success(`${file.name} อัปโหลดเรียบร้อยแล้ว.`);
         return false; // Prevent auto upload
+    };
+
+    const handleRemoveImage = () => {
+        setUploadedImage(null);
+        message.success("รูปภาพที่อัปโหลดถูกลบออก.");
     };
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text)
             .then(() => {
-                message.success("Copied to clipboard!");
+                message.success("คัดลอกไปยังคลิปบอร์ดแล้ว!");
             })
             .catch(err => {
-                console.error("Failed to copy text: ", err);
+                console.error("ไม่สามารถคัดลอกข้อความ: ", err);
             });
     };
 
-    // Function to submit payment information
     const handleSubmitPayment = async () => {
         if (!selectedInvoice) {
-            message.error("Please select an invoice.");
+            message.error("โปรดเลือกใบแจ้งหนี้.");
             return;
         }
 
+        setIsSubmitting(true);
+
         try {
+            let imageUrl: string | null = null;
+
+            if (uploadedImage) {
+                const storageRef = ref(storage, `payments/${selectedInvoice.room}/${selectedInvoice.id}.png`);
+                await uploadString(storageRef, uploadedImage, 'data_url');
+                imageUrl = await getDownloadURL(storageRef);
+            }
+
             const paymentData = {
                 invoiceId: selectedInvoice.id,
                 room: selectedInvoice.room,
                 month: selectedInvoice.month,
                 year: selectedInvoice.year,
                 total: selectedInvoice.total,
-                uploadedImage,
+                uploadedImage: imageUrl,
                 userId: auth.currentUser?.uid,
                 timestamp: new Date()
             };
 
-            // Save payment data to Firestore
-            const paymentCollection = collection(firestore, 'payments'); // Create a collection for payments
+            const paymentCollection = collection(firestore, 'payments');
             await addDoc(paymentCollection, paymentData);
 
-            message.success("Payment information submitted successfully!");
+            const usersQuery = query(collection(firestore, 'users'), where('role', '==', 'admin'));
+            const usersSnapshot = await getDocs(usersQuery);
+
+            const notificationPromises = usersSnapshot.docs.map(adminUser => {
+                const notificationData = {
+                    message: `ชำระเงินใหม่ส่งโดยห้อง ${selectedInvoice.room} สำหรับ ${selectedInvoice.month}`,
+                    userId: adminUser.id,
+                    read: false,
+                    timestamp: new Date(),
+                };
+                return addDoc(collection(firestore, 'notifications'), notificationData);
+            });
+
+            await Promise.all(notificationPromises);
+
+            message.success("ส่งข้อมูลการชำระเงินเรียบร้อยแล้ว!");
             setUploadedImage(null); // Clear uploaded image
             setSelectedInvoice(null); // Clear selected invoice
         } catch (error) {
-            console.error("Error submitting payment information: ", error);
-            message.error("Failed to submit payment information. Please try again.");
+            console.error("เกิดข้อผิดพลาดในการส่งข้อมูลการชำระเงิน: ", error);
+            message.error("ส่งข้อมูลการชำระเงินไม่สำเร็จ โปรดลองอีกครั้ง");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -153,6 +209,7 @@ const PaymentPage: React.FC = () => {
                             {invoices.length > 0 ? (
                                 <>
                                     <Select
+                                        className="custom-select"
                                         style={{ width: 300, marginBottom: 20 }}
                                         placeholder="เลือกบิล"
                                         onChange={handleInvoiceSelect}
@@ -174,26 +231,36 @@ const PaymentPage: React.FC = () => {
                                             </Upload>
 
                                             {uploadedImage && (
-                                                <img 
-                                                    src={uploadedImage} 
-                                                    alt="Uploaded Slip" 
-                                                    style={{ marginTop: 10, maxWidth: '100%', height: 'auto' }} 
-                                                />
+                                                <div className="image-preview">
+                                                    <img
+                                                        src={uploadedImage}
+                                                        alt="Uploaded Slip"
+                                                        className="uploaded-image"
+                                                    />
+                                                    <Button
+                                                        icon={<DeleteOutlined />}
+                                                        onClick={handleRemoveImage}
+                                                        type="link"
+                                                        danger
+                                                    >
+                                                        ลบรูป
+                                                    </Button>
+                                                </div>
                                             )}
 
                                             <Button
                                                 type="primary"
+                                                onClick={handleSubmitPayment}
+                                                loading={isSubmitting}
                                                 style={{ marginTop: 20 }}
-                                                disabled={!selectedInvoice}
-                                                onClick={handleSubmitPayment} // Call the submission function
                                             >
-                                                ส่งข้อมูลการชำระเงิน
+                                                ส่งหลักฐานการชำระเงิน
                                             </Button>
                                         </>
                                     )}
                                 </>
                             ) : (
-                                <p>ไม่มีบิลสำหรับห้องนี้</p>
+                                <p>ไม่พบบิลที่ต้องชำระ</p>
                             )}
                         </>
                     )}

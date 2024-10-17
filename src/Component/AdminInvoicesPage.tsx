@@ -6,7 +6,7 @@ import Footer from './Footer';
 import './AdminInvoicesPage.css';
 
 interface InvoiceData {
-    id: string; // Add ID to the InvoiceData for Firestore reference
+    id: string;
     room: string;
     month: string;
     year: number;
@@ -19,7 +19,6 @@ interface InvoiceData {
     pdfUrl?: string;
 }
 
-// Updated month order mapping in Thai
 const monthOrder: { [key: string]: number } = {
     'มกราคม': 1,
     'กุมภาพันธ์': 2,
@@ -39,6 +38,7 @@ const AdminInvoicesPage: React.FC = () => {
     const [invoices, setInvoices] = useState<InvoiceData[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedRoom, setSelectedRoom] = useState<string | undefined>(undefined);
+    const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
     const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({});
     const firestore = getFirestore();
 
@@ -53,11 +53,10 @@ const AdminInvoicesPage: React.FC = () => {
                     ...doc.data(),
                 })) as InvoiceData[];
 
-                // Sort invoices by month and year
                 invoicesList.sort((a, b) => {
-                    const monthA = monthOrder[a.month] || 0; // Default to 0 if month is unknown
+                    const monthA = monthOrder[a.month] || 0;
                     const monthB = monthOrder[b.month] || 0;
-                    return monthA - monthB || (a.year - b.year); // Sort by year if months are the same
+                    return monthA - monthB || (a.year - b.year);
                 });
 
                 setInvoices(invoicesList);
@@ -74,26 +73,44 @@ const AdminInvoicesPage: React.FC = () => {
     const handleSave = async (id: string, updatedData: Partial<InvoiceData>) => {
         try {
             const invoiceRef = doc(firestore, 'invoices', id);
-            await updateDoc(invoiceRef, updatedData);
-            message.success('ข้อมูลบิลได้ถูกแก้ไขเรียบร้อยแล้ว!');
-            // Refresh invoices after update
-            const updatedInvoices = invoices.map(invoice =>
-                invoice.id === id ? { ...invoice, ...updatedData } : invoice
-            );
-            setInvoices(updatedInvoices);
-            setIsEditing(prev => ({ ...prev, [id]: false })); // Exit edit mode after saving
+            
+            // Get the current invoice data to compute the total
+            const currentInvoice = invoices.find(invoice => invoice.id === id);
+            
+            if (currentInvoice) {
+                // Update the current invoice with the new data
+                const updatedInvoice = { ...currentInvoice, ...updatedData };
+                
+                // Calculate the new total
+                const rent = parseFloat(updatedInvoice.rent) || 0;
+                const water = parseFloat(updatedInvoice.water) || 0;
+                const electricity = parseFloat(updatedInvoice.electricity) || 0;
+                const fine = parseFloat(updatedInvoice.fine) || 0;
+                const newTotal = rent + water + electricity + fine;
+    
+                // Update Firestore
+                await updateDoc(invoiceRef, { ...updatedData, total: newTotal });
+    
+                // Update local state
+                message.success('ข้อมูลบิลได้ถูกแก้ไขเรียบร้อยแล้ว!');
+                const updatedInvoices = invoices.map(invoice =>
+                    invoice.id === id ? { ...invoice, ...updatedData, total: newTotal } : invoice
+                );
+                setInvoices(updatedInvoices);
+                setIsEditing(prev => ({ ...prev, [id]: false }));
+            }
         } catch (error) {
             console.error("Error updating invoice: ", error);
             message.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบิล!');
         }
     };
+    
 
     const handleDelete = async (id: string) => {
         try {
             const invoiceRef = doc(firestore, 'invoices', id);
             await deleteDoc(invoiceRef);
             message.success('ข้อมูลบิลได้ถูกลบเรียบร้อยแล้ว!');
-            // Remove the deleted invoice from the state
             setInvoices(invoices.filter(invoice => invoice.id !== id));
         } catch (error) {
             console.error("Error deleting invoice: ", error);
@@ -105,9 +122,14 @@ const AdminInvoicesPage: React.FC = () => {
         setSelectedRoom(value);
     };
 
-    const filteredInvoices = selectedRoom 
-        ? invoices.filter(invoice => invoice.room === selectedRoom) 
-        : invoices;
+    const handleYearChange = (value: number) => {
+        setSelectedYear(value);
+    };
+
+    const filteredInvoices = invoices.filter(invoice => {
+        return (!selectedRoom || invoice.room === selectedRoom) &&
+            (!selectedYear || invoice.year === selectedYear);
+    });
 
     const toggleRoomStatus = async (id: string, currentStatus: string) => {
         const newStatus = currentStatus === 'จ่ายแล้ว' ? 'ค้างชำระ' : 'จ่ายแล้ว';
@@ -115,7 +137,7 @@ const AdminInvoicesPage: React.FC = () => {
     };
 
     const toggleEdit = (id: string) => {
-        setIsEditing(prev => ({ ...prev, [id]: !prev[id] })); // Toggle edit state
+        setIsEditing(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
     const columns = [
@@ -244,25 +266,41 @@ const AdminInvoicesPage: React.FC = () => {
             <Navbar />
             <div className="admin-invoices-container">
                 <h3>แก้ไขบิลแจ้งหนี้</h3>
-                <Select 
-                    placeholder="เลือกห้อง" 
-                    onChange={handleRoomChange} 
-                    style={{ width: 200, marginBottom: 20 }}
-                >
-                    {Array.from(new Set(invoices.map(invoice => invoice.room))).map(room => (
-                        <Select.Option key={room} value={room}>
-                            {room}
-                        </Select.Option>
-                    ))}
-                </Select>
+                <div style={{ marginBottom: 20 }}>
+                    <Select
+                        placeholder="เลือกห้อง"
+                        onChange={handleRoomChange}
+                        style={{ width: 200, marginRight: 10 }}
+                    >
+                        {['201', '202', '203', '204', '205', '206', '207', '208', '309', '310', '311', '312', '313', '314', '315', '316', '225', '226', '227', '228', '329', '330', '331', '332'].map(room => (
+                            <Select.Option key={room} value={room}>
+                                {room}
+                            </Select.Option>
+                        ))}
+                    </Select>
+
+                    <Select
+                        placeholder="เลือกปี"
+                        onChange={handleYearChange}
+                        style={{ width: 200 }}
+                    >
+                        {Array.from(new Set(invoices.map(invoice => invoice.year)))
+                            .sort((a, b) => b - a)
+                            .map(year => (
+                                <Select.Option key={year} value={year}>
+                                    {year + 543}
+                                </Select.Option>
+                            ))}
+                    </Select>
+                </div>
                 {loading ? (
                     <Spin />
                 ) : (
-                    <Table 
-                        dataSource={filteredInvoices} 
-                        columns={columns} 
-                        rowKey="id" 
-                        pagination={false} 
+                    <Table
+                        columns={columns}
+                        dataSource={filteredInvoices}
+                        rowKey="id"
+                        pagination={false}
                     />
                 )}
             </div>

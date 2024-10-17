@@ -1,0 +1,49 @@
+.admin-payment-status-container {
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for the container */
+    min-height: 100vh; /* Ensures the container takes the full height */
+}
+
+.admin-payment-status-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333; /* Darker color for the heading */
+}
+
+.ant-table {
+    background-color: #fff; /* White background for the table */
+    border-radius: 5px; /* Slightly rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.ant-table th {
+    background-color: #e6f7ff; /* Light blue background for table headers */
+    color: #1890ff; /* Blue text for table headers */
+}
+
+.ant-table td {
+    text-align: center; /* Center align text in table cells */
+}
+
+.ant-btn {
+    margin: 0; /* Remove margin around buttons */
+}
+
+.ant-btn-primary {
+    background-color: #1890ff; /* Primary button color */
+    border-color: #1890ff; /* Border color matches button */
+}
+
+.ant-btn-primary:hover {
+    background-color: #40a9ff; /* Darker blue on hover */
+    border-color: #40a9ff; /* Darker border on hover */
+}
+
+.ant-spin {
+    display: block; /* Ensures the spinner is displayed properly */
+    margin: 0 auto; /* Center align the spinner */
+}
+
+.ant-modal img {
+    border-radius: 5px; /* Rounded corners for images in modal */
+}

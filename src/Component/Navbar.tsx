@@ -3,14 +3,13 @@ import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
 import {
     LoginOutlined, UserOutlined, DashboardOutlined,
     HomeOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
-    ToolOutlined, BulbOutlined, FileDoneOutlined,
+    ToolOutlined, BulbOutlined, FileDoneOutlined, HeartTwoTone,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
 import { doc, getDoc, collection, query, where, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import './Navbar.css';
-import { Timestamp } from 'firebase/firestore';
 
 const { Header } = Layout;
 
@@ -37,20 +36,35 @@ const Navbar: React.FC = () => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data() as { role: 'admin' | 'user'; userImage?: string };
                     setRole(userData.role || null);
-
+    
                     let notificationsQuery;
                     if (userData.role === 'admin') {
-                        notificationsQuery = query(collection(db, 'notifications'));
-                    } else {
                         notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', user.uid));
+                    } else {
+                        notificationsQuery = query(
+                            collection(db, 'notifications'),
+                            where('userId', '==', user.uid)
+                        );
                     }
-
+    
                     const notificationsSnap = await getDocs(notificationsQuery);
-                    const userNotifications: Notification[] = notificationsSnap.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data() as Omit<Notification, 'id'>
-                    }));
-                    setNotifications(userNotifications);
+                    const userNotifications: Notification[] = notificationsSnap.docs.map(doc => {
+                        const data = doc.data();
+                        return {
+                            id: doc.id,
+                            message: data.message,
+                            timestamp: data.timestamp
+                                ? (data.timestamp instanceof Date ? data.timestamp : new Date(data.timestamp.seconds * 1000))
+                                : new Date(), // ตรวจสอบรูปแบบ timestamp
+                            read: data.read,
+                            userImage: data.userImage,
+                        };
+                    });
+    
+                    // Sort notifications by timestamp in descending order (most recent first)
+                    const sortedNotifications = userNotifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    
+                    setNotifications(sortedNotifications);
                 } else {
                     setRole(null);
                 }
@@ -58,9 +72,9 @@ const Navbar: React.FC = () => {
                 setRole(null);
             }
         };
-
+    
         fetchUserRoleAndNotifications();
-    }, []);
+    }, []);    
 
     const handleLogout = () => {
         signOut(auth)
@@ -68,7 +82,7 @@ const Navbar: React.FC = () => {
                 navigate('/login');
             })
             .catch((error: Error) => {
-                console.error('Error signing out: ', error);
+                console.error('เกิดข้อผิดพลาดในการออกจากระบบ: ', error);
             });
     };
 
@@ -94,7 +108,7 @@ const Navbar: React.FC = () => {
                 prevNotifications.map(notification => ({ ...notification, read: true }))
             );
         } catch (error) {
-            console.error('Error updating notifications: ', error);
+            console.error('เกิดข้อผิดพลาดในการอัปเดตการแจ้งเตือน: ', error);
         }
     };
 
@@ -105,7 +119,7 @@ const Navbar: React.FC = () => {
                 prevNotifications.filter(notification => notification.id !== id)
             );
         } catch (error) {
-            console.error('Error deleting notification: ', error);
+            console.error('เกิดข้อผิดพลาดในการลบการแจ้งเตือน: ', error);
         }
     };
 
@@ -150,8 +164,12 @@ const Navbar: React.FC = () => {
         role === 'admin' && {
             key: 'AdminInvoicesPage',
             icon: <FileDoneOutlined />,
-            label: <Link to="/AdminInvoicesPage" className="menu-label">แก้ไขบิลแจ้งหนี้
-            </Link>,
+            label: <Link to="/AdminInvoicesPage" className="menu-label">แก้ไขบิลแจ้งหนี้</Link>,
+        },
+        role === 'admin' && {
+            key: 'AdminPaymentStatusPage',
+            icon: <FileDoneOutlined />,
+            label: <Link to="/AdminPaymentStatusPage" className="menu-label">สถานะการชำระเงิน</Link>,
         },
         role === 'user' && {
             key: 'profile',
@@ -166,7 +184,7 @@ const Navbar: React.FC = () => {
         role === 'user' && {
             key: 'PaymentPage',
             icon: <FileDoneOutlined />,
-            label: <Link to="/PaymentPage" className="menu-label">PaymentPage</Link>,
+            label: <Link to="/PaymentPage" className="menu-label">ส่งหลักฐานการโอน</Link>,
         },
         role === 'user' && {
             key: 'InvoiceDetails',
@@ -218,34 +236,28 @@ const Navbar: React.FC = () => {
                 onCancel={handleModalClose}
                 className="notification-modal"
                 footer={[
-                    <Button key="markAsRead" type="primary" onClick={markAsRead}>
-                        ทำเครื่องหมายว่าอ่านแล้ว
-                    </Button>
+                    <Button key="back" onClick={handleModalClose}>
+                        ปิด
+                    </Button>,
+                    <Button key="markAsRead" onClick={markAsRead} disabled={unreadNotifications.length === 0}>
+                        อ่านแจ้งเตือนทั้งหมด
+                    </Button>,
                 ]}
             >
                 <List
                     dataSource={notifications}
-                    renderItem={item => (
+                    renderItem={(item) => (
                         <List.Item
-                            className={`notification-list-item ${item.read ? 'read' : 'unread'}`}
                             key={item.id}
+                            className={`notification-item ${item.read ? 'read' : 'unread'}`}
+                            actions={[
+                                <Button onClick={() => handleDeleteNotification(item.id)}>ลบ</Button>,
+                            ]}
                         >
                             <List.Item.Meta
-                                avatar={item.userImage ? <img src={item.userImage} alt="User" className="notification-avatar" /> : null}
-                                title={<span className={`notification-list-title ${item.read ? 'read-title' : 'unread-title'}`}>{item.message}</span>}
-                                description={
-                                    <span className={`notification-list-description ${item.read ? 'read-description' : 'unread-description'}`}>
-                                        {`${item.timestamp instanceof Timestamp ? item.timestamp.toDate().toLocaleDateString() : new Date(item.timestamp).toLocaleDateString()} เวลา: ${item.timestamp instanceof Timestamp ? item.timestamp.toDate().toLocaleTimeString() : new Date(item.timestamp).toLocaleTimeString()}`}
-                                        <Button
-                                            type="link"
-                                            danger
-                                            onClick={() => handleDeleteNotification(item.id)}
-                                            style={{ marginLeft: '10px' }}
-                                        >
-                                            ลบ
-                                        </Button>
-                                    </span>
-                                }
+                                avatar={<HeartTwoTone twoToneColor="#eb2f96" />}
+                                title={<span style={{ color: '#eb2f96' }}>{item.message}</span>} // Inline style for title
+                                description={<span style={{ color: '#555' }}>{item.timestamp.toLocaleString()}</span>} // Inline style for description
                             />
                         </List.Item>
                     )}

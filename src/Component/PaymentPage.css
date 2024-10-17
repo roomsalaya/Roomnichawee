@@ -1,61 +1,124 @@
 .payment-container {
-    max-width: 600px; /* Set a max width for better readability */
-    margin: 0 auto; /* Center the container */
-    padding: 20px; /* Add padding around the container */
-    background-color: #f9f9f9; /* Light background for contrast */
-    border-radius: 8px; /* Rounded corners for a softer look */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    max-width: 600px;
+    /* Set a max width for better readability */
+    margin: 0 auto;
+    /* Center the container */
+    padding: 20px;
+    /* Add padding around the container */
+    background-color: #f9f9f9;
+    /* Light background for contrast */
+    border-radius: 8px;
+    /* Rounded corners for a softer look */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow effect */
     min-height: 100vh;
 }
 
 .h3 {
-    text-align: center; /* Center the title */
-    color: #333; /* Darker color for better readability */
+    text-align: center;
+    /* Center the title */
+    color: #333;
+    /* Darker color for better readability */
 }
 
-.scb, .bum, .scb1 {
-    font-size: 16px; /* Set font size for better readability */
-    margin: 10px 0; /* Space between paragraphs */
-    color: #555; /* Slightly lighter text for secondary information */
+.scb,
+.bum,
+.scb1 {
+    font-size: 16px;
+    /* Set font size for better readability */
+    margin: 10px 0;
+    /* Space between paragraphs */
+    color: #555;
+    /* Slightly lighter text for secondary information */
 }
 
 .logo-image {
-    width: 50px; /* Set a specific width for the logo */
-    vertical-align: middle; /* Align logo vertically with text */
+    width: 50px;
+    /* Set a specific width for the logo */
+    vertical-align: middle;
+    /* Align logo vertically with text */
 }
 
 .copy-button {
-    margin-left: 10px; /* Space between the account number and button */
+    margin-left: 10px;
+    /* Space between the account number and button */
 }
 
 .invoice-details {
-    margin-top: 20px; /* Space above invoice details */
-    padding: 15px; /* Padding around the details section */
-    background-color: #ffffff; /* White background for details */
-    border: 1px solid #e0e0e0; /* Border for separation */
-    border-radius: 5px; /* Rounded corners for details */
+    margin-top: 20px;
+    /* Space above invoice details */
+    padding: 15px;
+    /* Padding around the details section */
+    background-color: #ffffff;
+    /* White background for details */
+    border: 1px solid #e0e0e0;
+    /* Border for separation */
+    border-radius: 5px;
+    /* Rounded corners for details */
 }
 
 .invoice-details h4 {
-    margin-bottom: 15px; /* Space below the details title */
-    font-size: 20px; /* Larger font size for the title */
-    color: #333; /* Dark color for title */
+    margin-bottom: 15px;
+    /* Space below the details title */
+    font-size: 20px;
+    /* Larger font size for the title */
+    color: #333;
+    /* Dark color for title */
 }
 
 .invoice-details p {
-    margin: 5px 0; /* Space between details paragraphs */
+    margin: 5px 0;
+    /* Space between details paragraphs */
 }
 
 .ant-upload {
-    display: block; /* Ensure upload button occupies full width */
+    display: block;
+    /* Ensure upload button occupies full width */
 }
 
 .ant-btn-dashed {
-    width: 100%; /* Make the upload button full-width */
-    margin-top: 10px; /* Space above the button */
+    width: 100%;
+    /* Make the upload button full-width */
+    margin-top: 10px;
+    /* Space above the button */
 }
 
 .ant-btn-primary {
-    width: 100%; /* Make the submit button full-width */
-    margin-top: 20px; /* Space above the button */
+    width: 100%;
+    /* Make the submit button full-width */
+    margin-top: 20px;
+    /* Space above the button */
+}
+
+.uploaded-image {
+    margin-top: 10px;
+    max-width: 70%;
+    height: auto;
+    object-fit: contain;
+    /* Ensures the image maintains its aspect ratio */
+    border: 1px solid #d9d9d9;
+    /* Optional: Add a border for clarity */
+    padding: 5px;
+}
+
+.custom-select .ant-select-selector {
+    background-color: #f0f0f0;
+    /* Light background */
+    border: 2px solid #1890ff;
+    /* Border color (you can change this) */
+    color: #000000;
+    /* Text color */
+}
+
+.custom-select .ant-select-arrow {
+    color: #1890ff;
+    font-size: 20px;
+    /* Change the arrow color */
+}
+
+.custom-select .ant-select-item-option-selected {
+    background-color: #bae7ff;
+    /* Background color for selected option */
+    color: #0050b3;
+    /* Text color for selected option */
 }

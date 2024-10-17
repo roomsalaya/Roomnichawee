@@ -10,15 +10,15 @@ const { Option } = Select;
 
 interface InvoiceData {
     room: string;
-    month: string; // Assuming month is stored as a string (e.g., 'January', 'February', etc.)
-    year: number; // Store year as a number for filtering
+    month: string;
+    year: number;
     rent: string;
     water: string;
     electricity: string;
     fine: string;
     total: number;
     roomStatus: string;
-    pdfUrl?: string; // Add pdfUrl for the PDF download link
+    pdfUrl?: string;
 }
 
 const SentInvoicesPage: React.FC = () => {
@@ -60,7 +60,6 @@ const SentInvoicesPage: React.FC = () => {
         setSelectedYear(value);
     };
 
-    // Mapping month names to numbers for sorting
     const monthMap: { [key: string]: number } = {
         'มกราคม': 1,
         'กุมภาพันธ์': 2,
@@ -76,12 +75,11 @@ const SentInvoicesPage: React.FC = () => {
         'ธันวาคม': 12,
     };
 
-    // Filter and sort invoices by selected year and month
     const filteredInvoicesByYear = selectedYear
         ? invoices
-            .filter(invoice => invoice.year === selectedYear - 543) // Convert to Gregorian year for filtering
-            .sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0)) // Sort by month
-        : invoices.sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0)); // Sort by month
+            .filter(invoice => invoice.year === selectedYear - 543)
+            .sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0))
+        : invoices.sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0));
 
     const columns = [
         {
@@ -98,7 +96,7 @@ const SentInvoicesPage: React.FC = () => {
             title: 'ปี (พ.ศ.)',
             dataIndex: 'year',
             key: 'year',
-            render: (text: number) => text + 543, // Convert to Buddhist Era for display
+            render: (text: number) => text + 543,
         },
         {
             title: 'ค่าเช่า (บาท)',
@@ -163,6 +161,7 @@ const SentInvoicesPage: React.FC = () => {
                             columns={columns}
                             rowKey="room"
                             pagination={{ pageSize: 10 }}
+                            className='table'
                         />
                     </>
                 ) : (
