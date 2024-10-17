@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
 import {
     LoginOutlined, UserOutlined, DashboardOutlined,
-    StarOutlined, BellOutlined, InboxOutlined, FileSyncOutlined,
-    ToolOutlined, BulbOutlined, FileDoneOutlined, HeartTwoTone,
+    StarOutlined, BellOutlined,  FileSyncOutlined,
+    BulbOutlined, FileDoneOutlined, HeartTwoTone,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
