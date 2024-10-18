@@ -22,6 +22,7 @@ const AdminInvoicesPage = lazy(() => import('./Component/AdminInvoicesPage'));
 const PaymentPage = lazy(() => import('./Component/PaymentPage'));
 const PaymentHistoryPage = lazy(() => import('./Component/PaymentHistoryPage'));
 const AdminPaymentStatusPage = lazy(() => import('./Component/AdminPaymentStatusPage'));
+const ChangePassword = lazy(() => import('./Component/ChangePassword'));
 
 const App: React.FC = () => {
 
@@ -48,6 +49,7 @@ const App: React.FC = () => {
           <Route path='/PaymentPage' element={<PaymentPage/>} />
           <Route path='/PaymentHistoryPage' element={<PaymentHistoryPage/>} />
           <Route path='/AdminPaymentStatusPage' element={<AdminPaymentStatusPage/>} />
+          <Route path='/ChangePassword' element={<ChangePassword/>}/>
         </Routes>
       </Suspense>
     </Router>
