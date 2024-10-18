@@ -186,11 +186,11 @@
     margin: 20px auto; /* กำหนด margin ให้เท่ากันทั้งซ้ายและขวา */
 }
 
-.notification-icon {
-    font-size: 24px; /* ขนาดของไอคอนแจ้งเตือน */
-    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็น pointer เมื่อเลื่อนเมาส์ */
+.notification-badge {
+    margin-right: 10px;
 }
 
-.notification-badge {
-    margin-right: 20px; /* ระยะห่างจากด้านขวา */
+.notification-icon {
+    margin-right: 10px;
+    font-size: 20px;
 }

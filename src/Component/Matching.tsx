@@ -13,7 +13,7 @@ interface GameItem {
 const initialItems: GameItem[] = [
     { itemNo: 1, matchNo: 1, src: 'src/assets/Ben_10_Upchuck.png', type: 'item', matched: false, selecting: false },
     { itemNo: 2, matchNo: 2, src: 'src/assets/Ben_10.jpg', type: 'item', matched: false, selecting: false },
-    { itemNo: 3, matchNo: 3, src: '/images/cheese.png', type: 'item', matched: false, selecting: false },
+    { itemNo: 3, matchNo: 3, src: 'src/assets/VHGhA7q8_400x400.jpeg', type: 'item', matched: false, selecting: false },
     { itemNo: 4, matchNo: 4, src: '/images/lettuce.png', type: 'item', matched: false, selecting: false },
     { itemNo: 5, matchNo: 5, src: '/images/meat.png', type: 'item', matched: false, selecting: false },
     { itemNo: 6, matchNo: 6, src: '/images/rice.png', type: 'item', matched: false, selecting: false },

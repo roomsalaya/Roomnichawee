@@ -138,7 +138,6 @@ const AdminUser: React.FC = () => {
                                             hoverable
                                             className={`user-card ${selectedUser?.id === user.id ? 'selected' : ''}`}
                                         >
-                                            <p>{user.email}</p>
                                         </Card>
                                     </Col>
                                 ))}

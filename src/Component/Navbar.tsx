@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Button, Modal, List, Badge } from 'antd';
+import { Layout, Menu, Button, Modal, List, Badge, Dropdown } from 'antd';
 import {
-    LoginOutlined, UserOutlined, DashboardOutlined,
-    StarOutlined, BellOutlined,  FileSyncOutlined,
-    BulbOutlined, FileDoneOutlined, HeartTwoTone,
+    LoginOutlined, EllipsisOutlined,
+    BellOutlined, HeartTwoTone,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebaseConfig';
@@ -36,7 +35,7 @@ const Navbar: React.FC = () => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data() as { role: 'admin' | 'user'; userImage?: string };
                     setRole(userData.role || null);
-    
+
                     let notificationsQuery;
                     if (userData.role === 'admin') {
                         notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', user.uid));
@@ -46,7 +45,7 @@ const Navbar: React.FC = () => {
                             where('userId', '==', user.uid)
                         );
                     }
-    
+
                     const notificationsSnap = await getDocs(notificationsQuery);
                     const userNotifications: Notification[] = notificationsSnap.docs.map(doc => {
                         const data = doc.data();
@@ -60,10 +59,8 @@ const Navbar: React.FC = () => {
                             userImage: data.userImage,
                         };
                     });
-    
-                    // Sort notifications by timestamp in descending order (most recent first)
+
                     const sortedNotifications = userNotifications.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
                     setNotifications(sortedNotifications);
                 } else {
                     setRole(null);
@@ -72,9 +69,9 @@ const Navbar: React.FC = () => {
                 setRole(null);
             }
         };
-    
+
         fetchUserRoleAndNotifications();
-    }, []);    
+    }, []);
 
     const handleLogout = () => {
         signOut(auth)
@@ -125,82 +122,55 @@ const Navbar: React.FC = () => {
 
     const unreadNotifications = notifications.filter(notification => !notification.read);
 
-    const menuItems = [
-        role === 'admin' && {
-            key: 'dashboard',
-            icon: <DashboardOutlined />,
-            label: <Link to="/adminDashboard" className="menu-label">แดชบอร์ด</Link>,
-        },
-        role === 'admin' && {
-            key: 'adminusers',
-            icon: <FileSyncOutlined />,
-            label: <Link to="/adminusers" className="menu-label">แก้ไขข้อมูลผู้เช่า</Link>,
-        },
-        //role === 'admin' && {
-            //key: 'parcel',
-            //icon: <InboxOutlined />,
-            //label: <Link to="/parcel" className="menu-label">เพิ่มพัสดุ</Link>,
-       //},
-        //role === 'admin' && {
-           // key: 'maintenanceHistory',
-            //icon: <ToolOutlined />,
-            //label: <Link to="/MaintenanceList" className="menu-label">ประวัติแจ้งซ่อมแซม</Link>,
-       // },
-        role === 'admin' && {
-            key: 'ElectricityRate',
-            icon: <BulbOutlined />,
-            label: <Link to="/ElectricityRate" className="menu-label">จดมิเตอร์</Link>,
-        },
-        role === 'admin' && {
-            key: 'InvoiceForm',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/InvoiceForm" className="menu-label">ใบแจ้งหนี้</Link>,
-        },
-        role === 'admin' && {
-            key: 'AdminInvoicesPage',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/AdminInvoicesPage" className="menu-label">แก้ไขบิลแจ้งหนี้</Link>,
-        },
-        role === 'admin' && {
-            key: 'AdminPaymentStatusPage',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/AdminPaymentStatusPage" className="menu-label">สถานะการชำระเงิน</Link>,
-        },
-        role === 'user' && {
-            key: 'profile',
-            icon: <UserOutlined />,
-            label: <Link to="/profile" className="menu-label">โปรไฟล์</Link>,
-        },
-        role === 'user' && {
-            key: 'SentInvoicesPage',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/SentInvoicesPage" className="menu-label">บิลแจ้งหนี้</Link>,
-        },
-        role === 'user' && {
-            key: 'PaymentPage',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/PaymentPage" className="menu-label">ส่งหลักฐานการโอน</Link>,
-        },
-        role === 'user' && {
-            key: 'InvoiceDetails',
-            icon: <FileDoneOutlined />,
-            label: <Link to="/PaymentHistoryPage" className="menu-label">ประวัติการชำระเงิน</Link>,
-        },
-        {
-            key: 'home',
-            icon: <StarOutlined />,
-            label: <Link to="/home" className="menu-label">เกมจับคู่</Link>,
-        },
-        role && {
-            key: 'logout',
-            icon: <LoginOutlined />,
-            label: <span className="menu-label-Login" onClick={handleLogout}>ออกจากระบบ</span>,
-            onClick: handleLogout,
-        },
-    ].filter(Boolean) as { key: string; icon: JSX.Element; label: JSX.Element; onClick?: (() => void) | undefined }[];
+    // Define the menu for Dropdown
+    const menu = (
+        <Menu>
+            {role === 'admin' && (
+                <>
+                    <Menu.Item key="dashboard">
+                        <Link to="/adminDashboard">แดชบอร์ด</Link>
+                    </Menu.Item>
+                    <Menu.Item key="adminusers">
+                        <Link to="/adminusers">แก้ไขข้อมูลผู้เช่า</Link>
+                    </Menu.Item>
+                    <Menu.Item key="ElectricityRate">
+                        <Link to="/ElectricityRate">จดมิเตอร์</Link>
+                    </Menu.Item>
+                    <Menu.Item key="InvoiceForm">
+                        <Link to="/InvoiceForm">ใบแจ้งหนี้</Link>
+                    </Menu.Item>
+                    <Menu.Item key="AdminInvoicesPage">
+                        <Link to="/AdminInvoicesPage">แก้ไขบิลแจ้งหนี้</Link>
+                    </Menu.Item>
+                    <Menu.Item key="AdminPaymentStatusPage">
+                        <Link to="/AdminPaymentStatusPage">สถานะการชำระเงิน</Link>
+                    </Menu.Item>
+                </>
+            )}
+            {role === 'user' && (
+                <>
+                    <Menu.Item key="profile">
+                        <Link to="/profile">โปรไฟล์</Link>
+                    </Menu.Item>
+                    <Menu.Item key="SentInvoicesPage">
+                        <Link to="/SentInvoicesPage">บิลแจ้งหนี้</Link>
+                    </Menu.Item>
+                    <Menu.Item key="PaymentPage">
+                        <Link to="/PaymentPage">ส่งหลักฐานการโอน</Link>
+                    </Menu.Item>
+                    <Menu.Item key="PaymentHistoryPage">
+                        <Link to="/PaymentHistoryPage">ประวัติการชำระเงิน</Link>
+                    </Menu.Item>
+                </>
+            )}
+            <Menu.Item key="logout" onClick={handleLogout}>
+                <LoginOutlined /> ออกจากระบบ
+            </Menu.Item>
+        </Menu>
+    );
 
     return (
-        <Header style={{ background: '#fff', padding: 0 }}>
+        <Header style={{ background: '#fff', padding: 0, position: 'relative' }}>
             <div className="logo" style={{ float: 'left', marginLeft: '20px' }}>
                 <h2>หอพักณิชชาวีร์</h2>
             </div>
@@ -210,15 +180,21 @@ const Navbar: React.FC = () => {
                 mode="horizontal"
                 defaultSelectedKeys={['home']}
                 style={{ lineHeight: '64px', float: 'right' }}
-                items={menuItems}
             />
 
-            <Badge count={unreadNotifications.length} className="notification-badge">
-                <BellOutlined
-                    className="notification-icon"
-                    onClick={handleNotificationClick}
-                />
-            </Badge>
+            <div style={{ position: 'absolute', right: '20px', top: '20px', display: 'flex', alignItems: 'center' }}>
+                <Dropdown overlay={menu} trigger={['click']}>
+                    <EllipsisOutlined style={{ fontSize: '20px', marginRight: '10px', cursor: 'pointer' }} />
+                </Dropdown>
+
+                <Badge count={unreadNotifications.length} className="notification-badge">
+                    <BellOutlined
+                        className="notification-icon"
+                        onClick={handleNotificationClick}
+                        style={{ fontSize: '20px', cursor: 'pointer' }}
+                    />
+                </Badge>
+            </div>
 
             {role === null && (
                 <Button
@@ -256,8 +232,8 @@ const Navbar: React.FC = () => {
                         >
                             <List.Item.Meta
                                 avatar={<HeartTwoTone twoToneColor="#eb2f96" />}
-                                title={<span style={{ color: '#eb2f96' }}>{item.message}</span>} // Inline style for title
-                                description={<span style={{ color: '#555' }}>{item.timestamp.toLocaleString()}</span>} // Inline style for description
+                                title={<span style={{ color: '#eb2f96' }}>{item.message}</span>}
+                                description={<span style={{ color: '#555' }}>{item.timestamp.toLocaleString()}</span>}
                             />
                         </List.Item>
                     )}
