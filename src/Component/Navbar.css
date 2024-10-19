@@ -54,27 +54,32 @@
     color: #40a9ff;
 }
 
-/* Modal styles */
-.notification-modal .ant-modal-title {
-    font-weight: bold;
-    color: #333;
-    font-family: "Anuphan", system-ui;
+/* Navbar.css */
+
+.notification-modal .ant-modal-body {
+    max-height: 400px; /* Set a max height for the modal's body */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.notification-modal .ant-modal-footer {
-    display: flex;
-    justify-content: space-between;
+.notification-item {
+    padding: 10px;
 }
 
-.notification-modal .ant-btn-primary {
-    background-color: #1890ff;
-    border-color: #1890ff;
-    font-family: 'Anuphan', sans-serif;
+.notification-item.read {
+    background-color: #f0f0f0; /* Grey background for read notifications */
 }
 
-.notification-modal .ant-btn-primary:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
+.notification-item.unread {
+    background-color: #ffffff; /* White background for unread notifications */
+}
+
+.notification-badge {
+    margin-right: 20px;
+}
+
+.notification-icon {
+    color: #1890ff;
+    cursor: pointer;
 }
 
 /* Notification list items */
