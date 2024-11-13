@@ -18,7 +18,6 @@ interface PaymentData {
     roomStatus: string;
 }
 
-// Define the order for room sorting
 const roomOrder = [
     '201', '202', '203', '204', '205', '206', '207', '208',
     '309', '310', '311', '312', '313', '314', '315', '316',
@@ -46,7 +45,8 @@ const AdminPaymentStatusPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState<string | null>(null);
     const [selectedRoom, setSelectedRoom] = useState<string | undefined>(undefined);
-    const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined); // New state for selected year
+    const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
+    const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined); // New state for selected month
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -62,17 +62,19 @@ const AdminPaymentStatusPage: React.FC = () => {
                     id: doc.id,
                     ...doc.data(),
                 })) as PaymentData[];
-
-                // Sort payments by year and month
+    
                 paymentsList.sort((a, b) => {
                     if (a.year === b.year) {
+                        if (a.month === b.month) {
+                            return roomOrder.indexOf(a.room) - roomOrder.indexOf(b.room);
+                        }
                         return monthMapping[a.month] - monthMapping[b.month];
                     }
                     return a.year - b.year;
                 });
-
+    
                 setPayments(paymentsList);
-                setFilteredPayments(paymentsList); // Initialize filtered payments
+                setFilteredPayments(paymentsList);
             } catch (error) {
                 console.error("Error fetching payment history: ", error);
                 message.error("Failed to load payment data.");
@@ -80,51 +82,47 @@ const AdminPaymentStatusPage: React.FC = () => {
                 setIsLoading(false);
             }
         };
-
+    
         fetchPayments();
-    }, [firestore]);
+    }, [firestore]);    
 
     useEffect(() => {
-        // Filter payments based on selected room and year
         setFilteredPayments(payments.filter(payment => {
             const roomMatch = selectedRoom ? payment.room === selectedRoom : true;
             const yearMatch = selectedYear ? payment.year === selectedYear : true;
-            return roomMatch && yearMatch;
+            const monthMatch = selectedMonth ? payment.month === selectedMonth : true;
+            return roomMatch && yearMatch && monthMatch;
         }));
-    }, [selectedRoom, selectedYear, payments]);
+    }, [selectedRoom, selectedYear, selectedMonth, payments]);
 
     const handleStatusChange = async (paymentId: string, currentStatus: string) => {
         setIsUpdating(paymentId);
         const newStatus = currentStatus === 'จ่ายแล้ว' ? 'ค้างชำระ' : 'จ่ายแล้ว';
-    
+
         try {
             const paymentDocRef = doc(firestore, 'payments', paymentId);
             await updateDoc(paymentDocRef, { roomStatus: newStatus });
-    
-            // ดึงการชำระเงินเพื่อตรวจสอบ invoiceId
+
             const updatedPayment = payments.find(payment => payment.id === paymentId);
             if (updatedPayment) {
-                // อัปเดตใบแจ้งหนี้ที่เกี่ยวข้อง
                 const invoiceDocRef = doc(firestore, 'invoices', updatedPayment.invoiceId);
                 await updateDoc(invoiceDocRef, { roomStatus: newStatus });
             }
-    
-            // อัปเดตสถานะใน state
+
             setFilteredPayments(prevPayments =>
                 prevPayments.map(payment =>
                     payment.id === paymentId ? { ...payment, roomStatus: newStatus } : payment
                 )
             );
-    
+
             message.success('อัปเดตสถานะเรียบร้อยแล้ว.');
-    
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการอัปเดตสถานะ: ", error);
             message.error("ไม่สามารถอัปเดตสถานะได้.");
         } finally {
             setIsUpdating(null);
         }
-    };    
+    };
 
     const handleDelete = async (paymentId: string) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this payment record?');
@@ -180,7 +178,7 @@ const AdminPaymentStatusPage: React.FC = () => {
             key: 'roomStatus',
             render: (roomStatus: string, record: PaymentData) => (
                 <Button
-                    type={roomStatus === 'paid' ? 'primary' : 'default'}
+                    type={roomStatus === 'จ่ายแล้ว' ? 'primary' : 'default'}
                     loading={isUpdating === record.id}
                     onClick={() => handleStatusChange(record.id, roomStatus)}
                 >
@@ -197,7 +195,7 @@ const AdminPaymentStatusPage: React.FC = () => {
                     src={uploadedImage}
                     alt="Payment Slip"
                     style={{ width: '100px', cursor: 'pointer' }}
-                    onClick={() => handleImageClick(uploadedImage)} // Open modal on click
+                    onClick={() => handleImageClick(uploadedImage)}
                 />
             ),
         },
@@ -223,7 +221,6 @@ const AdminPaymentStatusPage: React.FC = () => {
         }
     ];
 
-    // Extract unique years from payments
     const uniqueYears = Array.from(new Set(payments.map(payment => payment.year))).sort();
 
     return (
@@ -240,7 +237,7 @@ const AdminPaymentStatusPage: React.FC = () => {
                     allowClear
                 >
                     {Array.from(new Set(payments.map(payment => payment.room)))
-                        .sort((a, b) => roomOrder.indexOf(a) - roomOrder.indexOf(b)) // Sort according to defined room order
+                        .sort((a, b) => roomOrder.indexOf(a) - roomOrder.indexOf(b))
                         .map(room => (
                             <Select.Option key={room} value={room}>
                                 {room}
@@ -257,27 +254,37 @@ const AdminPaymentStatusPage: React.FC = () => {
                 >
                     {uniqueYears.map(year => (
                         <Select.Option key={year} value={year}>
-                            {year + 543} {/* Display year in Buddhist calendar */}
+                            {year + 543}
+                        </Select.Option>
+                    ))}
+                </Select>
+
+                {/* Month Selection Dropdown */}
+                <Select
+                    placeholder="เลือกเดือน"
+                    style={{ width: 200, marginBottom: 20, marginLeft: 10 }}
+                    onChange={setSelectedMonth}
+                    allowClear
+                >
+                    {Object.keys(monthMapping).map(month => (
+                        <Select.Option key={month} value={month}>
+                            {month}
                         </Select.Option>
                     ))}
                 </Select>
 
                 {isLoading ? (
-                    <Spin size="large" />
+                    <Spin />
                 ) : (
-                    <Table
-                        dataSource={filteredPayments}
-                        columns={columns}
-                        rowKey="id"
-                        pagination={false}
-                    />
+                    <Table columns={columns} dataSource={filteredPayments} rowKey="id" />
                 )}
-
-                {/* Modal for image preview */}
-                <Modal visible={isModalVisible} footer={null} onCancel={handleModalClose}>
-                    <img src={previewImage || ''} alt="Payment Slip Preview" style={{ width: '100%' }} />
-                </Modal>
             </div>
+
+            {/* Image Preview Modal */}
+            <Modal visible={isModalVisible} footer={null} onCancel={handleModalClose}>
+                <img src={previewImage!} alt="Payment Slip" style={{ width: '100%' }} />
+            </Modal>
+
             <Footer />
         </>
     );

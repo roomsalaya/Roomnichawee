@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Spin, Select } from 'antd';
+import { Table, Spin, Select, Tooltip } from 'antd';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import Navbar from './Navbar';
@@ -132,7 +132,26 @@ const SentInvoicesPage: React.FC = () => {
             title: 'ดาวน์โหลด PDF',
             dataIndex: 'pdfUrl',
             key: 'pdfUrl',
-            render: (url: string) => url ? <a href={url} target="_blank" rel="noopener noreferrer">ดาวน์โหลด</a> : 'ไม่มีไฟล์',
+            render: (url: string) =>
+                url ? (
+                    <Tooltip title="กดเปิดลิงก์ในแท็บใหม่หากไม่สามารถดาวน์โหลดได้">
+                        <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => {
+                                // Check for iOS user agents
+                                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                                if (isIOS) {
+                                    window.open(url, "_blank");
+                                    e.preventDefault();
+                                }
+                            }}
+                        >
+                            ดาวน์โหลด
+                        </a>
+                    </Tooltip>
+                ) : 'ไม่มีไฟล์',            
         },
     ];
 
