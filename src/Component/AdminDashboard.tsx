@@ -3,64 +3,79 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import Navbar from './Navbar';
 import './AdminDashboard.css';
-import { Row, Col, Card, Progress, Spin, message as AntMessage } from 'antd'; // Import message from Ant Design
-import { PieChart, Pie, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import { Row, Col, Card, Progress, Spin, Input, List, message as AntMessage } from 'antd';
 import Footer from './Footer';
 
-interface RoomStatus {
-    available: number;
-    occupied: number;
+interface User {
+    id: string;
+    name: string;
+    phone: string;
+    room: string;
 }
 
 const AdminDashboard: React.FC = () => {
     const [userCount, setUserCount] = useState<number>(0);
-    const [roomStatus, setRoomStatus] = useState<RoomStatus>({ available: 0, occupied: 0 });
     const [loading, setLoading] = useState<boolean>(false);
+    const [users, setUsers] = useState<User[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+
     const auth = getAuth();
     const db = getFirestore();
     const admin = auth.currentUser;
 
     useEffect(() => {
-        if (admin?.uid) { // Use optional chaining
-            const fetchUserCount = async () => {
+        if (admin?.uid) {
+            const fetchUsers = async () => {
                 setLoading(true);
                 try {
                     const usersCollection = collection(db, 'users');
                     const usersSnapshot = await getDocs(usersCollection);
-                    setUserCount(usersSnapshot.size);
 
-                    let availableCount = 0;
-                    let occupiedCount = 0;
-
+                    const usersData: User[] = [];
                     usersSnapshot.forEach((doc) => {
                         const data = doc.data();
-                        if (data.roomStatus === 'available') {
-                            availableCount += 1;
-                        } else if (data.roomStatus === 'occupied') {
-                            occupiedCount += 1;
-                        }
+                        usersData.push({
+                            id: doc.id,
+                            name: data.name || 'ไม่ทราบชื่อ',
+                            phone: data.phone || 'ไม่ระบุเบอร์โทร',
+                            room: data.room || 'ไม่ระบุห้อง',
+                        });
                     });
 
-                    setRoomStatus({ available: availableCount, occupied: occupiedCount });
+                    setUsers(usersData);
+                    setFilteredUsers(usersData);
+                    setUserCount(usersData.length);
                 } catch (error) {
-                    console.error("Error fetching user data:", error);
-                    AntMessage.error('เกิดข้อผิดพลาดในการดึงข้อมูล'); // Use Ant Design's message for error
+                    console.error('Error fetching user data:', error);
+                    AntMessage.error('เกิดข้อผิดพลาดในการดึงข้อมูล');
                 } finally {
                     setLoading(false);
                 }
             };
 
-            fetchUserCount();
+            fetchUsers();
         }
     }, [admin, db]);
 
-    const roomData = [
-        { name: 'ห้องว่าง', value: roomStatus.available },
-        { name: 'ห้องไม่ว่าง', value: roomStatus.occupied },
-    ];
+    // Handle search query change
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value.trim();
+        setSearchQuery(query);
 
-    const COLORS = ['#6495ED', '#FF7F50'];
-    const totalRooms = 100; // Adjust this based on your actual total room count
+        // Filter users by phone number or room
+        if (query) {
+            const filtered = users.filter((user) =>
+                user.phone.toLowerCase().includes(query.toLowerCase()) ||
+                user.room.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredUsers(filtered);
+        } else {
+            setFilteredUsers(users);
+        }
+    };
+
+    const totalRooms = 100;
     const userPercentage = (userCount / totalRooms) * 100;
 
     return (
@@ -75,7 +90,7 @@ const AdminDashboard: React.FC = () => {
                 ) : (
                     <Row gutter={[16, 16]}>
                         <Col span={24}>
-                            <Card title="จำนวนห้อง">
+                            <Card title="จำนวนผู้ใช้">
                                 <Progress
                                     percent={userPercentage}
                                     format={() => `${userCount} ห้อง`}
@@ -85,26 +100,22 @@ const AdminDashboard: React.FC = () => {
                         </Col>
 
                         <Col span={24}>
-                            <Card title="สถานะห้อง">
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={roomData}
-                                            cx="50%"
-                                            cy="50%"
-                                            outerRadius={80}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            label
-                                        >
-                                            {roomData.map((_, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
+                            <Input
+                                placeholder="ค้นหาเบอร์โทรหรือห้อง"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="search-input"
+                            />
+                            <Card title="ผลการค้นหา">
+                                <List
+                                    bordered
+                                    dataSource={filteredUsers}
+                                    renderItem={(user) => (
+                                        <List.Item>
+                                            {user.name} - {user.phone} - ห้อง: {user.room}
+                                        </List.Item>
+                                    )}
+                                />
                             </Card>
                         </Col>
                     </Row>
