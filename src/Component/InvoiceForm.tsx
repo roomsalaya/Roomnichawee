@@ -218,7 +218,7 @@ const InvoiceForm: React.FC = () => {
                     value={selectedYear}
                     onChange={handleYearChange}
                 >
-                    {Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() + i)).map((year) => (
+                    {Array.from({ length: 10 }, (_, i) => (2024 + i)).map((year) => (
                         <option key={year} value={year.toString()}>{year}</option>
                     ))}
                 </select>
