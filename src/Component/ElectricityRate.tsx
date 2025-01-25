@@ -184,7 +184,7 @@ const ElectricityRate: React.FC = () => {
 
     const calculateAmount = (units: string): string => {
         const unitsValue = parseInt(units, 10) || 0;
-        const amount = unitsValue * 9; // Replace 9 with your rate per unit if necessary
+        const amount = unitsValue * 8; // Replace 8 with your rate per unit if necessary
         return amount.toString();
     };
 
