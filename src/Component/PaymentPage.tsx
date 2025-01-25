@@ -184,15 +184,15 @@ const PaymentPage: React.FC = () => {
                             &nbsp; ธนาคารไทยพาณิชย์
                         </p>
                         <p className='scb'>
-                            ชื่อบัญชี : ธนกร แดนประเทือง
+                            ชื่อบัญชี : ณัชชา นุ่มสันต์
                         </p>
                         <p className='bum'>
-                            เลขบัญชี : 403-992701-1
+                            เลขบัญชี : 131-2-01-973-3
                             &nbsp;<Tooltip title="คัดลอกหมายเลขบัญชี">
                                 <Button
                                     shape="circle"
                                     icon={<CopyOutlined />}
-                                    onClick={() => copyToClipboard('403992701-1')}
+                                    onClick={() => copyToClipboard('1312019733')}
                                     className='copy-button'
                                 />
                             </Tooltip>
