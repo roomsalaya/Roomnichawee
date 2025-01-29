@@ -145,9 +145,6 @@ const Navbar: React.FC = () => {
                     <Menu.Item key="AdminPaymentStatusPage">
                         <Link to="/AdminPaymentStatusPage">สถานะการชำระเงิน</Link>
                     </Menu.Item>
-                    <Menu.Item key="AdminPaymentStatusPage">
-                        <Link to="/ChangePassword">ChangePassword</Link>
-                    </Menu.Item>
                 </>
             )}
             {role === 'user' && (
