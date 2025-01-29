@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, message, Spin, Modal } from 'antd';
+import { Table, message, Spin, Modal, Select } from 'antd';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import Navbar from './Navbar';
@@ -16,8 +16,10 @@ interface PaymentData {
     uploadedImage: string;
     timestamp: any; // Firestore timestamp
     userId: string;
-    roomStatus: string; // Added this field for room status
+    roomStatus: string;
 }
+
+const { Option } = Select;
 
 // Mapping month names to numerical values for sorting
 const monthMapping: { [key: string]: number } = {
@@ -37,9 +39,11 @@ const monthMapping: { [key: string]: number } = {
 
 const PaymentHistoryPage: React.FC = () => {
     const [payments, setPayments] = useState<PaymentData[]>([]);
+    const [filteredPayments, setFilteredPayments] = useState<PaymentData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedImage, setSelectedImage] = useState<string | null>(null); // State to hold selected image
-    const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Current year as default
 
     const firestore = getFirestore();
     const auth = getAuth();
@@ -52,7 +56,6 @@ const PaymentHistoryPage: React.FC = () => {
                 if (user) {
                     const userId = user.uid;
 
-                    // Get the payments collection for the logged-in user
                     const paymentsCollection = collection(firestore, 'payments');
                     const paymentsSnapshot = await getDocs(paymentsCollection);
                     const paymentsList = paymentsSnapshot.docs.map(doc => ({
@@ -60,10 +63,8 @@ const PaymentHistoryPage: React.FC = () => {
                         ...doc.data(),
                     })) as PaymentData[];
 
-                    // Filter payments by the current user's ID
                     const userPayments = paymentsList.filter(payment => payment.userId === userId);
 
-                    // Sort payments by year and month
                     userPayments.sort((a, b) => {
                         if (a.year === b.year) {
                             return monthMapping[a.month] - monthMapping[b.month];
@@ -84,13 +85,20 @@ const PaymentHistoryPage: React.FC = () => {
         fetchPayments();
     }, [firestore, auth]);
 
-    // Function to handle image click and open modal
+    useEffect(() => {
+        const filtered = payments.filter(payment => payment.year === selectedYear);
+        setFilteredPayments(filtered);
+    }, [payments, selectedYear]);
+
+    const handleYearChange = (year: number) => {
+        setSelectedYear(year);
+    };
+
     const handleImageClick = (imageUrl: string) => {
         setSelectedImage(imageUrl);
         setIsModalVisible(true);
     };
 
-    // Function to close the modal
     const handleModalClose = () => {
         setIsModalVisible(false);
         setSelectedImage(null);
@@ -123,7 +131,7 @@ const PaymentHistoryPage: React.FC = () => {
                     src={uploadedImage}
                     alt="Payment Slip"
                     style={{ width: '100px', cursor: 'pointer' }}
-                    onClick={() => handleImageClick(uploadedImage)} // Open modal on click
+                    onClick={() => handleImageClick(uploadedImage)}
                 />
             ),
         },
@@ -140,7 +148,7 @@ const PaymentHistoryPage: React.FC = () => {
             render: (roomStatus: string) => (
                 <span>{roomStatus === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'ค้างชำระ'}</span>
             ),
-        },        
+        },
     ];
 
     return (
@@ -148,18 +156,32 @@ const PaymentHistoryPage: React.FC = () => {
             <Navbar />
             <div className="payment-history-container">
                 <h3>ประวัติการชำระเงิน</h3>
+                <div style={{ marginBottom: '16px' }}>
+                    <Select
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                        style={{ width: 200 }}
+                        placeholder="เลือกปี"
+                        allowClear
+                    >
+                        {Array.from({ length: 7 }, (_, i) => 2567 + i).map(year => (
+                            <Option key={year} value={year - 543}>
+                                {year}
+                            </Option>
+                        ))}
+                    </Select>
+                </div>
                 {isLoading ? (
                     <Spin size="large" />
                 ) : (
                     <Table
-                        dataSource={payments}
+                        dataSource={filteredPayments}
                         columns={columns}
                         rowKey="id"
                         pagination={false}
                     />
                 )}
 
-                {/* Modal for displaying the clicked image */}
                 <Modal
                     visible={isModalVisible}
                     footer={null}

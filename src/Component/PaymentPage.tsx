@@ -215,11 +215,13 @@ const PaymentPage: React.FC = () => {
                                         onChange={handleInvoiceSelect}
                                         value={selectedInvoice?.id || undefined}
                                     >
-                                        {invoices.map(invoice => (
-                                            <Option key={invoice.id} value={invoice.id}>
-                                                {`${invoice.month} (ยอด: ${invoice.total} บาท, ${invoice.roomStatus})`}
-                                            </Option>
-                                        ))}
+                                        {invoices
+                                            .filter(invoice => invoice.year === new Date().getFullYear()) // Filter invoices for the current year
+                                            .map(invoice => (
+                                                <Option key={invoice.id} value={invoice.id}>
+                                                    {`${invoice.month} (ยอด: ${invoice.total} บาท, ${invoice.roomStatus})`}
+                                                </Option>
+                                            ))}
                                     </Select>
 
                                     {selectedInvoice && (

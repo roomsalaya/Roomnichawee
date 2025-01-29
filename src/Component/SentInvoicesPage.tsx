@@ -24,7 +24,7 @@ interface InvoiceData {
 const SentInvoicesPage: React.FC = () => {
     const [invoices, setInvoices] = useState<InvoiceData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedYear, setSelectedYear] = useState<number | null>(null);
+    const [selectedYear, setSelectedYear] = useState<number | null>(new Date().getFullYear() + 543); // เริ่มต้นเป็นปีปัจจุบันใน พ.ศ.
     const firestore = getFirestore();
     const auth = getAuth();
     const [userRoom, setUserRoom] = useState<string | null>(null);
@@ -56,7 +56,7 @@ const SentInvoicesPage: React.FC = () => {
         fetchInvoices();
     }, [firestore, auth]);
 
-    const handleYearChange = (value: number) => {
+    const handleYearChange = (value: number | null) => {
         setSelectedYear(value);
     };
 
@@ -75,11 +75,9 @@ const SentInvoicesPage: React.FC = () => {
         'ธันวาคม': 12,
     };
 
-    const filteredInvoicesByYear = selectedYear
-        ? invoices
-            .filter(invoice => invoice.year === selectedYear - 543)
-            .sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0))
-        : invoices.sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0));
+    const filteredInvoicesByYear = invoices
+        .filter(invoice => !selectedYear || invoice.year === selectedYear - 543) // กรองเฉพาะปีที่เลือก หรือแสดงทั้งหมดถ้าไม่เลือก
+        .sort((a, b) => (monthMap[a.month] || 0) - (monthMap[b.month] || 0));
 
     const columns = [
         {
@@ -140,7 +138,6 @@ const SentInvoicesPage: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => {
-                                // Check for iOS user agents
                                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
                                 if (isIOS) {
                                     window.open(url, "_blank");
@@ -151,7 +148,7 @@ const SentInvoicesPage: React.FC = () => {
                             ดาวน์โหลด
                         </a>
                     </Tooltip>
-                ) : 'ไม่มีไฟล์',            
+                ) : 'ไม่มีไฟล์',
         },
     ];
 
@@ -168,6 +165,8 @@ const SentInvoicesPage: React.FC = () => {
                             style={{ width: 200, marginBottom: 20 }}
                             placeholder="เลือกปี"
                             onChange={handleYearChange}
+                            value={selectedYear || undefined}
+                            allowClear
                         >
                             {Array.from({ length: 11 }, (_, i) => 2567 + i).map(year => (
                                 <Option key={year} value={year}>
@@ -180,7 +179,7 @@ const SentInvoicesPage: React.FC = () => {
                             columns={columns}
                             rowKey="room"
                             pagination={{ pageSize: 10 }}
-                            className='table'
+                            className="table"
                         />
                     </>
                 ) : (
