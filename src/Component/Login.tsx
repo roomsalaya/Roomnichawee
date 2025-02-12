@@ -65,12 +65,18 @@ const Login: React.FC = () => {
                 message.error('ไม่พบข้อมูลผู้ใช้ในระบบ');
                 await auth.signOut();
             }
+<<<<<<< HEAD
         } catch (error: any) {
             console.error('Error during sign-in:', error);
             message.error('การล็อกอินล้มเหลว กรุณาตรวจสอบข้อมูลประจำตัวของคุณ.');
         } finally {
             setLoading(false);
         }
+=======
+        } catch (error) {
+            message.error('การล็อกอินล้มเหลว กรุณาตรวจสอบข้อมูลประจำตัวของคุณ.');
+        }        
+>>>>>>> b469d96 (first commit)
     };
 
     return (

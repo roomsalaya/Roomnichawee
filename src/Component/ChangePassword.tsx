@@ -199,4 +199,8 @@ const ChangePassword: React.FC = () => {
     );
 };
 
+<<<<<<< HEAD
 export default ChangePassword;
+=======
+export default ChangePassword;
+>>>>>>> b469d96 (first commit)
