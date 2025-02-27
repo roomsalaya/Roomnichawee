@@ -243,8 +243,4 @@ const Navbar: React.FC = () => {
     );
 };
 
-<<<<<<< HEAD
 export default Navbar;
-=======
-export default Navbar;
->>>>>>> b469d96 (first commit)
