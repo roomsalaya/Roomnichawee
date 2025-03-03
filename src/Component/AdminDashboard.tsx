@@ -88,25 +88,35 @@ const AdminDashboard: React.FC = () => {
                         <Spin size="large" />
                     </div>
                 ) : (
-                    <Row gutter={[16, 16]}>
-                        <Col span={24}>
-                            <Card title="จำนวนผู้ใช้">
+                    <Row gutter={[8, 8]}>
+                        <Col span={12}>
+                            <Card title="ห้อง">
                                 <Progress
                                     percent={userPercentage}
                                     format={() => `${userCount} ห้อง`}
                                     status="active"
                                 />
-                            </Card>
-                        </Col>
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card title="ห้องว่าง">
+                                    <p>เดือน มีนาคม (15/3/68)
+                                        ราคา 3,800 บาท ⚡ ว่าง 1 ห้อง</p>
+                                    <p>เดือน พฤษภาคม
+                                        ราคา 3,800 บาท ⚡ ว่าง 1 ห้อง</p>
+                                    <p>เดือน พฤษภาคม
+                                        ราคา 2,800 บาท ⚡ ว่าง 1 ห้อง</p>
+                                </Card>
+                            </Col>
 
                         <Col span={24}>
-                            <Input
-                                placeholder="ค้นหาเบอร์โทรหรือห้อง"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                className="search-input"
-                            />
-                            <Card title="ผลการค้นหา">
+                                <Card title="ผลการค้นหา">
+                                    <Input
+                                        placeholder="ค้นหาเบอร์โทรหรือห้อง"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        className="search-input"
+                                    />
                                 <List
                                     bordered
                                     dataSource={filteredUsers}
