@@ -146,7 +146,9 @@ const PaymentHistoryPage: React.FC = () => {
             dataIndex: 'roomStatus',
             key: 'roomStatus',
             render: (roomStatus: string) => (
-                <span>{roomStatus === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'ค้างชำระ'}</span>
+                <span className={`room-status ${roomStatus === 'จ่ายแล้ว' ? 'paid' : 'pending'}`}>
+                    {roomStatus === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'รอตรวจสอบ'}
+                </span>
             ),
         },
     ];

@@ -182,7 +182,7 @@ const AdminPaymentStatusPage: React.FC = () => {
                     loading={isUpdating === record.id}
                     onClick={() => handleStatusChange(record.id, roomStatus)}
                 >
-                    {roomStatus === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'ค้างชำระ'}
+                    {roomStatus === 'จ่ายแล้ว' ? 'จ่ายแล้ว' : 'รอตรวจสอบ'}
                 </Button>
             ),
         },

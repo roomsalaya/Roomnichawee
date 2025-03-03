@@ -72,6 +72,10 @@ const Profile: React.FC = () => {
                                 <th>ค่าไฟ หน่วยละ :</th>
                                 <td>{userData.electricity} บาท</td>
                             </tr>
+                            <tr>
+                                <th>กล่องฝากกุญแจ :</th>
+                                <td>{userData.box}</td>
+                            </tr>
                             {/* เพิ่มข้อมูลอื่น ๆ ที่ต้องการแสดง */}
                         </tbody>
                     </table>

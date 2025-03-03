@@ -121,6 +121,11 @@ const PaymentPage: React.FC = () => {
             return;
         }
 
+        if (!uploadedImage) {
+            message.error("โปรดแนบหลักฐานการชำระเงินก่อนกดส่ง.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -171,6 +176,7 @@ const PaymentPage: React.FC = () => {
             setIsSubmitting(false);
         }
     };
+
 
     return (
         <>

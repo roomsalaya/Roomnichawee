@@ -169,7 +169,7 @@ const InvoiceForm: React.FC = () => {
             water: user.water || '',
             electricity: electricityData[user.room]?.amount || 'ไม่ระบุ',
             fine: '',
-            roomStatus: user.roomStatus || false,
+            roomStatus: false,
             total: `${calculateTotal(user.rent, user.water, electricityData[user.room]?.amount)}`,
         });
         setIsModalVisible(true);
@@ -266,7 +266,7 @@ const InvoiceForm: React.FC = () => {
                             <Input type="number" />
                         </Form.Item>
                         <Form.Item name="roomStatus" label="สถานะห้อง">
-                            <Switch checkedChildren="จ่ายแล้ว" unCheckedChildren="ค้างชำระ" />
+                            <Switch defaultChecked={false} checkedChildren="จ่ายแล้ว" unCheckedChildren="ค้างชำระ" />
                         </Form.Item>
                         <Form.Item name="total" label="รวม" >
                             <Input disabled />
