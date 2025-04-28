@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Spin, Input, message, Select, Button } from 'antd';
+import { Table, Spin, Input, message, Select, Button, Upload } from 'antd';
 import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { UploadOutlined } from '@ant-design/icons';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import './AdminInvoicesPage.css';
@@ -41,6 +43,7 @@ const AdminInvoicesPage: React.FC = () => {
     const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
     const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({});
     const firestore = getFirestore();
+    const storage = getStorage();
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -73,25 +76,18 @@ const AdminInvoicesPage: React.FC = () => {
     const handleSave = async (id: string, updatedData: Partial<InvoiceData>) => {
         try {
             const invoiceRef = doc(firestore, 'invoices', id);
-            
-            // Get the current invoice data to compute the total
             const currentInvoice = invoices.find(invoice => invoice.id === id);
-            
+
             if (currentInvoice) {
-                // Update the current invoice with the new data
                 const updatedInvoice = { ...currentInvoice, ...updatedData };
-                
-                // Calculate the new total
                 const rent = parseFloat(updatedInvoice.rent) || 0;
                 const water = parseFloat(updatedInvoice.water) || 0;
                 const electricity = parseFloat(updatedInvoice.electricity) || 0;
                 const fine = parseFloat(updatedInvoice.fine) || 0;
                 const newTotal = rent + water + electricity + fine;
-    
-                // Update Firestore
+
                 await updateDoc(invoiceRef, { ...updatedData, total: newTotal });
-    
-                // Update local state
+
                 message.success('ข้อมูลบิลได้ถูกแก้ไขเรียบร้อยแล้ว!');
                 const updatedInvoices = invoices.map(invoice =>
                     invoice.id === id ? { ...invoice, ...updatedData, total: newTotal } : invoice
@@ -104,12 +100,19 @@ const AdminInvoicesPage: React.FC = () => {
             message.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลบิล!');
         }
     };
-    
 
     const handleDelete = async (id: string) => {
         try {
+            const invoice = invoices.find(inv => inv.id === id);
+            if (invoice?.pdfUrl) {
+                // ถ้ามี pdfUrl, ลบไฟล์ใน Storage ก่อน
+                const pdfRef = ref(storage, invoice.pdfUrl);
+                await deleteObject(pdfRef);
+            }
+
             const invoiceRef = doc(firestore, 'invoices', id);
             await deleteDoc(invoiceRef);
+
             message.success('ข้อมูลบิลได้ถูกลบเรียบร้อยแล้ว!');
             setInvoices(invoices.filter(invoice => invoice.id !== id));
         } catch (error) {
@@ -118,13 +121,28 @@ const AdminInvoicesPage: React.FC = () => {
         }
     };
 
-    const handleRoomChange = (value: string) => {
-        setSelectedRoom(value);
+    const handleUploadPdf = async (file: File, record: InvoiceData) => {
+        try {
+            if (record.pdfUrl) {
+                const oldPdfRef = ref(storage, record.pdfUrl);
+                await deleteObject(oldPdfRef); // ลบไฟล์เก่า
+            }
+
+            const storageRef = ref(storage, `pdfs/${record.id}_${file.name}`);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+
+            await handleSave(record.id, { pdfUrl: url });
+
+            message.success('อัปโหลด PDF สำเร็จแล้ว!');
+        } catch (error) {
+            console.error("Error uploading PDF: ", error);
+            message.error('เกิดข้อผิดพลาดในการอัปโหลด PDF!');
+        }
     };
 
-    const handleYearChange = (value: number) => {
-        setSelectedYear(value);
-    };
+    const handleRoomChange = (value: string) => setSelectedRoom(value);
+    const handleYearChange = (value: number) => setSelectedYear(value);
 
     const filteredInvoices = invoices.filter(invoice => {
         return (!selectedRoom || invoice.room === selectedRoom) &&
@@ -236,10 +254,27 @@ const AdminInvoicesPage: React.FC = () => {
             ),
         },
         {
-            title: 'ดาวน์โหลด PDF',
+            title: 'ดาวน์โหลด/เปลี่ยน PDF',
             dataIndex: 'pdfUrl',
             key: 'pdfUrl',
-            render: (url: string) => url ? <a href={url} target="_blank" rel="noopener noreferrer">ดาวน์โหลด</a> : 'ไม่มีไฟล์',
+            render: (_: any, record: InvoiceData) => (
+                <>
+                    {record.pdfUrl ? (
+                        <a href={record.pdfUrl} target="_blank" rel="noopener noreferrer">ดาวน์โหลด</a>
+                    ) : 'ไม่มีไฟล์'}
+                    <Upload
+                        showUploadList={false}
+                        beforeUpload={(file) => {
+                            handleUploadPdf(file, record);
+                            return false;
+                        }}
+                    >
+                        <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>
+                            อัปโหลดใหม่
+                        </Button>
+                    </Upload>
+                </>
+            ),
         },
         {
             title: 'แก้ไข/บันทึก',
@@ -293,6 +328,7 @@ const AdminInvoicesPage: React.FC = () => {
                             ))}
                     </Select>
                 </div>
+
                 {loading ? (
                     <Spin />
                 ) : (
