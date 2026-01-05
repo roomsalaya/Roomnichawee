@@ -65,11 +65,15 @@ const PaymentPage: React.FC = () => {
 
                     // Filter and sort invoices by month using the monthMap
                     const filteredInvoices = invoicesList
-                        .filter(invoice => invoice.room === room)
+                        .filter(invoice =>
+                            invoice.room === room &&
+                            invoice.roomStatus === 'ค้างชำระ'
+                        )
                         .sort((a, b) => {
-                            const monthA = monthMap[a.month];
-                            const monthB = monthMap[b.month];
-                            return monthA - monthB;
+                            if (a.year !== b.year) {
+                                return b.year - a.year;
+                            }
+                            return monthMap[a.month] - monthMap[b.month];
                         });
 
                     setInvoices(filteredInvoices);
@@ -221,13 +225,11 @@ const PaymentPage: React.FC = () => {
                                         onChange={handleInvoiceSelect}
                                         value={selectedInvoice?.id || undefined}
                                     >
-                                        {invoices
-                                            .filter(invoice => invoice.year === new Date().getFullYear()) // Filter invoices for the current year
-                                            .map(invoice => (
-                                                <Option key={invoice.id} value={invoice.id}>
-                                                    {`${invoice.month} (ยอด: ${invoice.total} บาท, ${invoice.roomStatus})`}
-                                                </Option>
-                                            ))}
+                                        {invoices.map(invoice => (
+                                            <Option key={invoice.id} value={invoice.id}>
+                                                {`${invoice.month} ${invoice.year} (ยอด: ${invoice.total} บาท, ${invoice.roomStatus})`}
+                                            </Option>
+                                        ))}
                                     </Select>
 
                                     {selectedInvoice && (
